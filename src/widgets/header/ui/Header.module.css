@@ -1,0 +1,25 @@
+.header {
+  position: sticky;
+  top: 0;
+  padding: var(--space-3) 0;
+  background-color: var(--color-background);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logo {
+}
+.navigation {
+}
+.navigationList {
+  display: flex;
+  gap: var(--space-3);
+  list-style: none;
+}
+.navigationItem {
+}
+.navigationLink {
+}
