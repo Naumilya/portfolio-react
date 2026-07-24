@@ -11,7 +11,15 @@
 }
 
 .logo {
+  color: var(--color-accent);
+  transition: var(--transition-base);
+  font-size: var(--font-size-3xl);
+
+  &:hover {
+    color: var(--color-accent-hover);
+  }
 }
+
 .navigation {
 }
 .navigationList {
@@ -21,5 +29,25 @@
 }
 .navigationItem {
 }
+
 .navigationLink {
+  --background-height: 100%;
+
+  padding-inline: var(--space-1);
+
+  color: var(--color-text-secondary);
+
+  background: linear-gradient(0deg, var(--color-accent), var(--color-accent))
+    no-repeat right bottom / 0 var(--background-height);
+
+  transition:
+    color var(--transition-fast),
+    background-size var(--transition-base);
+}
+
+.navigationLink:where(:hover, :focus-visible) {
+  color: var(--color-accent-contrast);
+
+  background-size: 100% var(--background-height);
+  background-position-x: left;
 }

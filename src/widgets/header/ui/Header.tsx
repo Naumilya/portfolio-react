@@ -32,7 +32,7 @@ export function Header() {
   return (
     <header className={styles.header}>
       <a href="#hero" className={styles.logo}>
-        Naumov Ilya
+        (˶˃ ᵕ ˂˶)
       </a>
       <nav aria-label="Основная навигация" className={styles.navigation}>
         <ul className={styles.navigationList}>
