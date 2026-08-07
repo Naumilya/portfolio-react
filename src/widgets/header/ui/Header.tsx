@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./Header.module.css";
 
@@ -17,54 +17,92 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
 ];
 
 export function Header() {
-  const [activeSection, setActiveSection] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const hash = window.location.hash;
-    return NAVIGATION_ITEMS.some((item) => item.href === hash) ? hash : "";
-  });
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
+    // Handle scroll for header styling
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
+    };
 
-      const viewportHeight = window.innerHeight;
-      const triggerPoint = viewportHeight * 0.35;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial call
 
-      let current = "";
+    // Set up intersection observer for active section detection
+    const setupIntersectionObserver = () => {
+      if (typeof window === "undefined") return;
 
-      for (const item of NAVIGATION_ITEMS) {
-        const section = document.getElementById(item.href.slice(1));
-        if (!section) continue;
-
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
-          current = item.href;
-          break;
-        }
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
 
-      if (!current) {
-        const last = NAVIGATION_ITEMS[NAVIGATION_ITEMS.length - 1];
-        const section = document.getElementById(last.href.slice(1));
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          if (rect.top <= triggerPoint) {
-            current = last.href;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          let currentSection = "";
+
+          // Find the section that is currently visible
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const id = entry.target.id;
+              // Skip hero section as it should not be active
+              if (id !== "hero") {
+                currentSection = `#${id}`;
+                break;
+              }
+            }
           }
-        }
-      }
 
-      if (current && current !== activeSection) {
-        setActiveSection(current);
+          // If no section is visible, set to empty string (no active section)
+          setActiveSection(currentSection);
+        },
+        {
+          root: null,
+          rootMargin: "0% 0% -50% 0%", // Trigger when section is 50% visible
+          threshold: 0.5,
+        },
+      );
+
+      // Observe all navigation sections (but not hero)
+      NAVIGATION_ITEMS.forEach((item) => {
+        const section = document.getElementById(item.href.slice(1));
+        if (section) {
+          observer.observe(section);
+        }
+      });
+
+      observerRef.current = observer;
+    };
+
+    setupIntersectionObserver();
+
+    // Handle hash changes
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (NAVIGATION_ITEMS.some((item) => item.href === hash)) {
+        setActiveSection(hash);
+      } else {
+        // If hash doesn't match any section, set to empty
+        setActiveSection("");
       }
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeSection]);
+    window.addEventListener("hashchange", handleHashChange);
+
+    // Initialize with current hash
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("hashchange", handleHashChange);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -79,8 +117,14 @@ export function Header() {
     return () => document.removeEventListener("keydown", handleKey);
   }, [menuOpen]);
 
-  const handleNavClick = () => {
+  const handleNavClick = (href: string) => {
     setMenuOpen(false);
+
+    // Scroll to the section
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -92,7 +136,7 @@ export function Header() {
       <button
         type="button"
         className={styles.menuButton}
-        aria-label="Открыть меню"
+        aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen((prev) => !prev)}
       >
@@ -112,7 +156,10 @@ export function Header() {
                   activeSection === nav.href ? styles.active : ""
                 }`}
                 aria-current={activeSection === nav.href ? "true" : undefined}
-                onClick={handleNavClick}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(nav.href);
+                }}
               >
                 {nav.content}
               </a>
