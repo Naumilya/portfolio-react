@@ -23,6 +23,7 @@ export function Header() {
 
   const navigationTargetRef = useRef<string | null>(null);
   const rafIdRef = useRef<number | null>(null);
+  const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Handle scroll for header styling
@@ -46,7 +47,6 @@ export function Header() {
       const readingLine = window.innerHeight * 0.32;
 
       let newActiveSection: string | null = null;
-      let targetReached = false;
 
       // Check if we're in the hero section or above the first navigation section
       const firstSection = sectionElements[0];
@@ -84,33 +84,11 @@ export function Header() {
             }
           }
         }
-
-        // If we have a navigation target and it's still valid, check if we've reached it
-        if (navigationTargetRef.current) {
-          const targetId = navigationTargetRef.current;
-          const targetElement = document.getElementById(targetId);
-
-          if (targetElement) {
-            const rect = targetElement.getBoundingClientRect();
-
-            // Check if the target section has reached the reading line with tolerance
-            if (Math.abs(rect.top - readingLine) < 16) {
-              // ±16px tolerance
-              newActiveSection = `#${targetId}`;
-              targetReached = true;
-            }
-          }
-        }
       }
 
       // Only update if active section actually changed
       if (newActiveSection !== activeSection) {
         setActiveSection(newActiveSection);
-      }
-
-      // Clear navigationTargetRef when target is reached
-      if (navigationTargetRef.current && targetReached) {
-        navigationTargetRef.current = null;
       }
 
       rafIdRef.current = null;
@@ -128,6 +106,39 @@ export function Header() {
       passive: true,
     });
 
+    // Handle scrollend event for programmatic navigation unlock
+    const handleScrollEnd = () => {
+      // Clear navigation target when scrolling ends
+      if (navigationTargetRef.current) {
+        navigationTargetRef.current = null;
+
+        // Run one final active section recalculation
+        updateActiveSection();
+      }
+
+      // Clear any pending scroll end timer
+      if (scrollEndTimerRef.current) {
+        clearTimeout(scrollEndTimerRef.current);
+        scrollEndTimerRef.current = null;
+      }
+    };
+
+    // Set up scrollend listener
+    window.addEventListener("scrollend", handleScrollEnd);
+
+    // Fallback for browsers that don't support scrollend
+    const handleScrollEvent = () => {
+      if (scrollEndTimerRef.current) {
+        clearTimeout(scrollEndTimerRef.current);
+      }
+
+      scrollEndTimerRef.current = setTimeout(() => {
+        handleScrollEnd();
+      }, 150); // 150ms debounce for scroll settle detection
+    };
+
+    window.addEventListener("scroll", handleScrollEvent, { passive: true });
+
     // Handle hash changes
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -138,13 +149,6 @@ export function Header() {
 
         // Set active section immediately to clicked item
         setActiveSection(hash);
-
-        // Clear the target after a delay if no scroll happens
-        setTimeout(() => {
-          if (navigationTargetRef.current === hash.slice(1)) {
-            navigationTargetRef.current = null;
-          }
-        }, 500);
       } else {
         // If hash doesn't match any section, set to empty
         setActiveSection(null);
@@ -163,11 +167,17 @@ export function Header() {
 
     return () => {
       window.removeEventListener("scroll", throttledUpdateActiveSection);
+      window.removeEventListener("scrollend", handleScrollEnd);
+      window.removeEventListener("scroll", handleScrollEvent);
+      window.removeEventListener("hashchange", handleHashChange);
 
       if (rafIdRef.current !== null) {
         cancelAnimationFrame(rafIdRef.current);
       }
-      window.removeEventListener("hashchange", handleHashChange);
+
+      if (scrollEndTimerRef.current) {
+        clearTimeout(scrollEndTimerRef.current);
+      }
     };
   }, []);
 
@@ -182,7 +192,7 @@ export function Header() {
 
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [menuOpen]);
+  }, [menuOpen, activeSection]);
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false);
