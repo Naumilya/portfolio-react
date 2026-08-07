@@ -138,17 +138,14 @@ export function Header() {
       }
     }
 
-    // Release navigation lock on user scroll intent
-    const releaseNavigationLock = () => {
-      navigationTargetRef.current = null;
-    };
-
-    // Set up listeners for real user scrolling intent
+    // Add listeners for various user scroll events that should release navigation lock
     const handleUserScrollIntent = () => {
-      releaseNavigationLock();
+      // Only clear the navigation target if it's not null (i.e., we're in a programmatic scroll)
+      if (navigationTargetRef.current !== null) {
+        navigationTargetRef.current = null;
+      }
     };
 
-    // Add listeners for various user scroll events
     window.addEventListener("wheel", handleUserScrollIntent, { passive: true });
     window.addEventListener("touchstart", handleUserScrollIntent, {
       passive: true,
@@ -165,7 +162,10 @@ export function Header() {
         event.key === "End" ||
         event.key === " "
       ) {
-        releaseNavigationLock();
+        // Only clear the navigation target if it's not null (i.e., we're in a programmatic scroll)
+        if (navigationTargetRef.current !== null) {
+          navigationTargetRef.current = null;
+        }
       }
     };
 
