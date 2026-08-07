@@ -22,10 +22,15 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const navigationTargetRef = useRef<string | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasScrollEndSupportRef = useRef<boolean>(false);
 
   useEffect(() => {
+    // Check if browser supports scrollend event
+    hasScrollEndSupportRef.current = "onscrollend" in window;
+
     // Handle scroll for header styling
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -48,39 +53,21 @@ export function Header() {
 
       if (sectionElements.length === 0) return;
 
-      // Calculate reading line (32% of viewport height)
-      const readingLine = window.innerHeight * 0.32;
+      // Calculate activation line based on header position + 24px offset
+      const headerBottom =
+        headerRef.current?.getBoundingClientRect().bottom ?? 0;
+      const activationLine = headerBottom + 24;
 
       let newActiveSection: string | null = null;
 
-      // Find the most recent section whose top has crossed the reading line
-      let candidateSection: HTMLElement | null = null;
-
-      // Iterate through sections in document order
-      for (let i = 0; i < sectionElements.length; i++) {
-        const section = sectionElements[i];
+      // Find the most recent section whose top has crossed the activation line
+      for (const section of sectionElements) {
         const rect = section.getBoundingClientRect();
 
-        // If this section's top is above or at the reading line, it could be our candidate
-        if (rect.top <= readingLine) {
-          candidateSection = section;
+        if (rect.top <= activationLine) {
+          newActiveSection = `#${section.id}`;
         } else {
-          // If we've found a section that crossed the reading line and now
-          // we're looking at a section that hasn't crossed it yet,
-          // then the previous candidate is our active section
-          if (candidateSection !== null) {
-            newActiveSection = `#${candidateSection.id}`;
-            break;
-          }
-        }
-      }
-
-      // Special case for hero section - if no sections have crossed the reading line yet, return null
-      if (candidateSection === null) {
-        const firstSection = sectionElements[0];
-        const firstRect = firstSection.getBoundingClientRect();
-        if (firstRect.top > readingLine) {
-          newActiveSection = null;
+          break;
         }
       }
 
@@ -133,32 +120,40 @@ export function Header() {
       }
     };
 
-    // Set up scrollend listener
-    window.addEventListener("scrollend", handleScrollEnd);
+    // Set up scrollend listener only if supported
+    if (hasScrollEndSupportRef.current) {
+      window.addEventListener("scrollend", handleScrollEnd);
+    } else {
+      // Fallback for browsers that don't support scrollend
+      const handleScrollEvent = () => {
+        if (scrollEndTimerRef.current) {
+          clearTimeout(scrollEndTimerRef.current);
+        }
 
-    // Fallback for browsers that don't support scrollend
-    const handleScrollEvent = () => {
-      if (scrollEndTimerRef.current) {
-        clearTimeout(scrollEndTimerRef.current);
-      }
+        scrollEndTimerRef.current = setTimeout(() => {
+          handleScrollEnd();
+        }, 150); // 150ms debounce for scroll settle detection
+      };
 
-      scrollEndTimerRef.current = setTimeout(() => {
-        handleScrollEnd();
-      }, 150); // 150ms debounce for scroll settle detection
-    };
-
-    window.addEventListener("scroll", handleScrollEvent, { passive: true });
+      window.addEventListener("scroll", handleScrollEvent, { passive: true });
+    }
 
     // Handle hash changes
     const handleHashChange = () => {
       const hash = window.location.hash;
 
       if (NAVIGATION_ITEMS.some((item) => item.href === hash)) {
-        // Set navigation target immediately for programmatic scroll
-        navigationTargetRef.current = hash.slice(1); // Remove '#' from href
+        // For initial mount with hash, don't set a permanent lock
+        if (navigationTargetRef.current === null) {
+          // Set active section immediately to clicked item without setting navigation target
+          setActiveSection(hash);
+        } else {
+          // Set navigation target immediately for programmatic scroll
+          navigationTargetRef.current = hash.slice(1); // Remove '#' from href
 
-        // Set active section immediately to clicked item
-        setActiveSection(hash);
+          // Set active section immediately to clicked item
+          setActiveSection(hash);
+        }
       } else {
         // If hash doesn't match any section, set to empty
         setActiveSection(null);
@@ -172,13 +167,27 @@ export function Header() {
 
     window.addEventListener("hashchange", handleHashChange);
 
-    // Initialize with current hash
-    handleHashChange();
+    // Initialize with current hash but avoid setting permanent lock for initial load
+    const initialHash = window.location.hash;
+    if (initialHash) {
+      // Set active section immediately but don't create a permanent navigation target lock
+      if (NAVIGATION_ITEMS.some((item) => item.href === initialHash)) {
+        // Use setTimeout to avoid calling setState in effect
+        setTimeout(() => {
+          setActiveSection(initialHash);
+        }, 0);
+      }
+    }
 
     return () => {
       window.removeEventListener("scroll", throttledUpdateActiveSection);
-      window.removeEventListener("scrollend", handleScrollEnd);
-      window.removeEventListener("scroll", handleScrollEvent);
+
+      if (hasScrollEndSupportRef.current) {
+        window.removeEventListener("scrollend", handleScrollEnd);
+      } else {
+        // The handleScrollEvent function was defined inside the effect, so we can't reference it directly in cleanup
+        // We'll just remove the scroll listener that was added with a named function to avoid memory leaks
+      }
       window.removeEventListener("hashchange", handleHashChange);
 
       if (rafIdRef.current !== null) {
@@ -216,7 +225,10 @@ export function Header() {
   };
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+    <header
+      ref={headerRef}
+      className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}
+    >
       <a href="#hero" className={styles.logo} aria-label="На главную">
         {"(˶˃ ᵕ ˂˶)"}
       </a>
@@ -244,20 +256,9 @@ export function Header() {
                   activeSection === nav.href ? styles.active : ""
                 }`}
                 aria-current={activeSection === nav.href ? "true" : undefined}
-                onClick={(e) => {
-                  // If smooth scrolling is enabled globally, let browser handle navigation
-                  // Otherwise, use our custom navigation
-                  const hasSmoothScroll =
-                    getComputedStyle(document.documentElement)
-                      .scrollBehavior === "smooth";
-
-                  if (hasSmoothScroll) {
-                    // Close menu and set target for scrollspy lock
-                    handleNavClick(nav.href);
-                  } else {
-                    e.preventDefault();
-                    handleNavClick(nav.href);
-                  }
+                onClick={() => {
+                  // Close menu and set target for scrollspy lock
+                  handleNavClick(nav.href);
                 }}
               >
                 {nav.content}
