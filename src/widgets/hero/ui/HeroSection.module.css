@@ -16,8 +16,10 @@
   align-items: center;
   gap: var(--space-2);
   margin-bottom: var(--space-4);
+
   font-family: "JetBrains Mono", "Fira Code", monospace;
   font-size: var(--font-size-sm);
+
   color: var(--color-text-muted);
 }
 
@@ -33,17 +35,19 @@
 }
 
 .highlight {
-  background-color: var(--color-accent);
-  color: var(--color-background);
   padding: 0 var(--space-1);
+
+  color: var(--color-background);
+  background-color: var(--color-accent);
 }
 
 .actions {
-  padding-top: var(--space-10);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-4);
-  flex-wrap: wrap;
+
+  padding-top: var(--space-10);
 }
 
 .primaryBtn,
@@ -51,20 +55,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   min-height: 44px;
   padding-inline: var(--space-5);
+
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
+
   font-weight: var(--font-weight-semibold);
+
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .primaryBtn {
-  background: var(--color-accent);
   color: var(--color-background);
+  background: var(--color-accent);
 }
 
 .primaryBtn:hover {
@@ -73,13 +82,13 @@
 }
 
 .secondaryBtn {
-  border-color: var(--color-border);
   color: var(--color-text-secondary);
+  border-color: var(--color-border);
 }
 
 .secondaryBtn:hover {
-  border-color: var(--color-border-hover);
   color: var(--color-text-primary);
+  border-color: var(--color-border-hover);
   transform: translateY(-2px);
 }
 
@@ -87,6 +96,7 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+
   transition: color var(--transition-fast);
 }
 
@@ -96,8 +106,75 @@
 
 .canvasWrapper {
   position: relative;
+
   width: 100%;
   height: 440px;
+
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.canvasWrapper:active {
+  cursor: grabbing;
+}
+
+.interactionHint {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+
+  color: var(--color-text-muted);
+
+  background: rgb(10 10 10 / 72%);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  pointer-events: none;
+
+  opacity: 0;
+  transform: translate(-50%, 6px);
+
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.interactionHintReady {
+  opacity: 0.72;
+  transform: translate(-50%, 0);
+}
+
+.interactionHintHidden {
+  opacity: 0;
+  transform: translate(-50%, 4px);
+}
+
+.interactionDot {
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 auto;
+
+  background: var(--color-accent);
+  border-radius: 50%;
+
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+@media (hover: hover) {
+  .canvasWrapper:hover .interactionHintReady:not(.interactionHintHidden) {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {
@@ -108,5 +185,21 @@
 
   .canvasWrapper {
     height: 320px;
+  }
+}
+
+@media (pointer: coarse) {
+  .canvasWrapper {
+    cursor: default;
+  }
+
+  .interactionHint {
+    bottom: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactionHint {
+    transition: none;
   }
 }
