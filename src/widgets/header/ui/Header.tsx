@@ -36,6 +36,11 @@ export function Header() {
 
     // Set up deterministic scrollspy with requestAnimationFrame throttling
     const updateActiveSection = () => {
+      // If we're in programmatic navigation, don't update active section
+      if (navigationTargetRef.current !== null) {
+        return;
+      }
+
       // Get all navigation sections except hero
       const sectionElements = NAVIGATION_ITEMS.map((item) =>
         document.getElementById(item.href.slice(1)),
@@ -48,48 +53,53 @@ export function Header() {
 
       let newActiveSection: string | null = null;
 
-      // Check if we're in the hero section or above the first navigation section
-      const firstSection = sectionElements[0];
-      if (window.scrollY === 0 || window.scrollY < firstSection.offsetTop) {
-        newActiveSection = null;
-      } else {
-        // Find which section is currently active based on reading line
-        for (let i = 0; i < sectionElements.length; i++) {
-          const section = sectionElements[i];
-          const rect = section.getBoundingClientRect();
+      // Find the most recent section whose top has crossed the reading line
+      let candidateSection: HTMLElement | null = null;
 
-          // Check if the current section's top is above the reading line
-          // and bottom is below the reading line
-          if (rect.top <= readingLine && rect.bottom > readingLine) {
-            newActiveSection = `#${section.id}`;
+      // Iterate through sections in document order
+      for (let i = 0; i < sectionElements.length; i++) {
+        const section = sectionElements[i];
+        const rect = section.getBoundingClientRect();
+
+        // If this section's top is above or at the reading line, it could be our candidate
+        if (rect.top <= readingLine) {
+          candidateSection = section;
+        } else {
+          // If we've found a section that crossed the reading line and now
+          // we're looking at a section that hasn't crossed it yet,
+          // then the previous candidate is our active section
+          if (candidateSection !== null) {
+            newActiveSection = `#${candidateSection.id}`;
             break;
-          }
-
-          // Special handling for contacts at the bottom of document
-          if (
-            i === sectionElements.length - 1 &&
-            window.scrollY + window.innerHeight >=
-              document.body.scrollHeight - 10
-          ) {
-            // Check if we're near the bottom and should activate contacts
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= readingLine && rect.bottom > readingLine) {
-              newActiveSection = `#${section.id}`;
-            } else if (
-              window.scrollY + window.innerHeight >=
-              document.body.scrollHeight - 100
-            ) {
-              // If we're at the very bottom, activate contacts even if not perfectly positioned
-              newActiveSection = `#${section.id}`;
-            }
           }
         }
       }
 
-      // Only update if active section actually changed
-      if (newActiveSection !== activeSection) {
-        setActiveSection(newActiveSection);
+      // Special case for hero section - if no sections have crossed the reading line yet, return null
+      if (candidateSection === null) {
+        const firstSection = sectionElements[0];
+        const firstRect = firstSection.getBoundingClientRect();
+        if (firstRect.top > readingLine) {
+          newActiveSection = null;
+        }
       }
+
+      // Special case for bottom of document - if we're at the very bottom, activate contacts
+      if (
+        window.scrollY + window.innerHeight >=
+        document.body.scrollHeight - 10
+      ) {
+        const lastSection = sectionElements[sectionElements.length - 1];
+        if (lastSection) {
+          newActiveSection = `#${lastSection.id}`;
+        }
+      }
+
+      // Only update if active section actually changed
+      // Use functional state update to avoid stale closure issues
+      setActiveSection((current) =>
+        current === newActiveSection ? current : newActiveSection,
+      );
 
       rafIdRef.current = null;
     };
@@ -192,7 +202,7 @@ export function Header() {
 
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [menuOpen, activeSection]);
+  }, [menuOpen]);
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false);
@@ -203,12 +213,6 @@ export function Header() {
 
     // Set active section immediately to clicked item
     setActiveSection(href);
-
-    // Scroll to the section
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
   };
 
   return (
@@ -241,8 +245,19 @@ export function Header() {
                 }`}
                 aria-current={activeSection === nav.href ? "true" : undefined}
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(nav.href);
+                  // If smooth scrolling is enabled globally, let browser handle navigation
+                  // Otherwise, use our custom navigation
+                  const hasSmoothScroll =
+                    getComputedStyle(document.documentElement)
+                      .scrollBehavior === "smooth";
+
+                  if (hasSmoothScroll) {
+                    // Close menu and set target for scrollspy lock
+                    handleNavClick(nav.href);
+                  } else {
+                    e.preventDefault();
+                    handleNavClick(nav.href);
+                  }
                 }}
               >
                 {nav.content}
