@@ -16,167 +16,252 @@ const NAVIGATION_ITEMS: NavigationItem[] = [
   { href: "#contacts", content: "Контакты" },
 ];
 
-export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+const SCROLL_KEYS = new Set([
+  "ArrowUp",
+  "ArrowDown",
+  "PageUp",
+  "PageDown",
+  "Home",
+  "End",
+  " ",
+]);
 
-  const navigationTargetRef = useRef<string | null>(null);
+function isNavigationHash(hash: string) {
+  return NAVIGATION_ITEMS.some((item) => item.href === hash);
+}
+
+function getInitialActiveSection(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return isNavigationHash(window.location.hash) ? window.location.hash : null;
+}
+
+function getInitialNavigationTarget(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const hash = window.location.hash;
+
+  if (isNavigationHash(hash) || hash === "#hero") {
+    return hash.slice(1);
+  }
+
+  return null;
+}
+
+function getInitialScrolledState() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.scrollY > 10;
+}
+
+export function Header() {
+  const [scrolled, setScrolled] = useState(getInitialScrolledState);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(
+    getInitialActiveSection,
+  );
+
   const headerRef = useRef<HTMLElement | null>(null);
+
+  /**
+   * Пока здесь есть target, viewport движется к секции через anchor navigation.
+   * В этот момент обычный scrollspy не должен перехватывать active state.
+   *
+   * Lock снимается только когда пользователь сам начинает управлять scroll.
+   */
+  const navigationTargetRef = useRef<string | null>(
+    getInitialNavigationTarget(),
+  );
+
   const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Handle scroll for header styling
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+    const sections = NAVIGATION_ITEMS.map((item) =>
+      document.getElementById(item.href.slice(1)),
+    ).filter((section): section is HTMLElement => section !== null);
+
+    const calculateActiveSection = (): string | null => {
+      if (sections.length === 0) {
+        return null;
+      }
+
+      const headerBottom =
+        headerRef.current?.getBoundingClientRect().bottom ?? 0;
+
+      /**
+       * Секция становится активной, когда подходит практически
+       * вплотную к sticky header.
+       *
+       * После этого она остаётся активной и во whitespace между
+       * секциями, пока следующая секция не пересечёт эту линию.
+       */
+      const activationLine = headerBottom + 24;
+
+      let nextActiveSection: string | null = null;
+
+      for (const section of sections) {
+        const { top } = section.getBoundingClientRect();
+
+        if (top <= activationLine) {
+          nextActiveSection = `#${section.id}`;
+          continue;
+        }
+
+        break;
+      }
+
+      /**
+       * Последняя секция часто физически не может дойти до activationLine
+       * из-за конца документа, поэтому в самом низу явно активируем Contacts.
+       */
+      const documentHeight = document.documentElement.scrollHeight;
+      const viewportBottom = window.scrollY + window.innerHeight;
+      const isAtBottom = viewportBottom >= documentHeight - 4;
+
+      if (isAtBottom) {
+        return NAVIGATION_ITEMS.at(-1)?.href ?? nextActiveSection;
+      }
+
+      return nextActiveSection;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial call
-
-    // Set up deterministic scrollspy with requestAnimationFrame throttling
     const updateActiveSection = () => {
-      // If we're in programmatic navigation, don't update active section
+      /**
+       * ВАЖНО:
+       * RAF завершился независимо от того, будет дальше early return или нет.
+       *
+       * Если оставить reset внизу функции, programmatic navigation
+       * способна навсегда заблокировать scheduler.
+       */
+      rafIdRef.current = null;
+
       if (navigationTargetRef.current !== null) {
         return;
       }
 
-      // Get all navigation sections except hero
-      const sectionElements = NAVIGATION_ITEMS.map((item) =>
-        document.getElementById(item.href.slice(1)),
-      ).filter(Boolean) as HTMLElement[];
+      const nextActiveSection = calculateActiveSection();
 
-      if (sectionElements.length === 0) return;
-
-      // Calculate activation line based on header position + 24px offset
-      const headerBottom =
-        headerRef.current?.getBoundingClientRect().bottom ?? 0;
-      const activationLine = headerBottom + 24;
-
-      let newActiveSection: string | null = null;
-
-      // Find the most recent section whose top has crossed the activation line
-      for (const section of sectionElements) {
-        const rect = section.getBoundingClientRect();
-
-        if (rect.top <= activationLine) {
-          newActiveSection = `#${section.id}`;
-        } else {
-          break;
-        }
-      }
-
-      // Special case for bottom of document - if we're at the very bottom, activate contacts
-      if (
-        window.scrollY + window.innerHeight >=
-        document.body.scrollHeight - 10
-      ) {
-        const lastSection = sectionElements[sectionElements.length - 1];
-        if (lastSection) {
-          newActiveSection = `#${lastSection.id}`;
-        }
-      }
-
-      // Only update if active section actually changed
-      // Use functional state update to avoid stale closure issues
       setActiveSection((current) =>
-        current === newActiveSection ? current : newActiveSection,
+        current === nextActiveSection ? current : nextActiveSection,
       );
-
-      rafIdRef.current = null;
     };
 
-    // Throttle updates using requestAnimationFrame
-    const throttledUpdateActiveSection = () => {
-      if (rafIdRef.current === null) {
-        rafIdRef.current = requestAnimationFrame(updateActiveSection);
+    const scheduleActiveSectionUpdate = () => {
+      if (rafIdRef.current !== null) {
+        return;
+      }
+
+      rafIdRef.current = requestAnimationFrame(updateActiveSection);
+    };
+
+    const handleScroll = () => {
+      setScrolled((current) => {
+        const next = window.scrollY > 10;
+
+        return current === next ? current : next;
+      });
+
+      if (navigationTargetRef.current === null) {
+        scheduleActiveSectionUpdate();
       }
     };
 
-    // Set up scroll listener
-    window.addEventListener("scroll", throttledUpdateActiveSection, {
-      passive: true,
-    });
+    /**
+     * Programmatic smooth-scroll и обычный scroll генерируют одинаковые
+     * scroll events, поэтому по scroll событию невозможно понять,
+     * кто сейчас управляет viewport.
+     *
+     * Вместо этого lock снимается по реальному пользовательскому intent.
+     */
+    const releaseNavigationLock = () => {
+      if (navigationTargetRef.current === null) {
+        return;
+      }
 
-    // Handle hash changes
+      navigationTargetRef.current = null;
+
+      /**
+       * Сбрасываем возможный старый RAF.
+       * Следующее настоящее scroll событие запустит свежий расчёт.
+       */
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (SCROLL_KEYS.has(event.key)) {
+        releaseNavigationLock();
+      }
+    };
+
     const handleHashChange = () => {
       const hash = window.location.hash;
 
-      if (NAVIGATION_ITEMS.some((item) => item.href === hash)) {
-        // Set active section immediately to clicked item
+      if (isNavigationHash(hash)) {
+        navigationTargetRef.current = hash.slice(1);
         setActiveSection(hash);
+        return;
+      }
 
-        // Set navigation target immediately for programmatic scroll
-        navigationTargetRef.current = hash.slice(1); // Remove '#' from href
-      } else {
-        // If hash doesn't match any section, set to empty
+      if (hash === "#hero") {
+        navigationTargetRef.current = "hero";
         setActiveSection(null);
-
-        // Clear navigation target when hash is empty or points to hero
-        if (hash === "" || hash === "#hero") {
-          navigationTargetRef.current = null;
-        }
+        return;
       }
+
+      navigationTargetRef.current = null;
+      setActiveSection(null);
     };
 
-    window.addEventListener("hashchange", handleHashChange);
-
-    // Initialize with current hash but avoid setting permanent lock for initial load
-    const initialHash = window.location.hash;
-    if (initialHash) {
-      // Set active section immediately but don't create a permanent navigation target lock
-      if (NAVIGATION_ITEMS.some((item) => item.href === initialHash)) {
-        // Use setTimeout to avoid calling setState in effect
-        setTimeout(() => {
-          setActiveSection(initialHash);
-        }, 0);
-
-        // For initial hash, set the navigationTargetRef but only if it's not #hero
-        if (initialHash !== "#hero") {
-          navigationTargetRef.current = initialHash.slice(1);
-        }
-      }
-    }
-
-    // Add listeners for various user scroll events that should release navigation lock
-    const handleUserScrollIntent = () => {
-      // Only clear the navigation target if it's not null (i.e., we're in a programmatic scroll)
-      if (navigationTargetRef.current !== null) {
-        navigationTargetRef.current = null;
-      }
-    };
-
-    window.addEventListener("wheel", handleUserScrollIntent, { passive: true });
-    window.addEventListener("touchstart", handleUserScrollIntent, {
+    window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
 
-    // Keyboard scrolling keys
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === "ArrowUp" ||
-        event.key === "ArrowDown" ||
-        event.key === "PageUp" ||
-        event.key === "PageDown" ||
-        event.key === "Home" ||
-        event.key === "End" ||
-        event.key === " "
-      ) {
-        // Only clear the navigation target if it's not null (i.e., we're in a programmatic scroll)
-        if (navigationTargetRef.current !== null) {
-          navigationTargetRef.current = null;
-        }
-      }
-    };
+    window.addEventListener("wheel", releaseNavigationLock, {
+      passive: true,
+    });
+
+    window.addEventListener("touchstart", releaseNavigationLock, {
+      passive: true,
+    });
+
+    /**
+     * Нужен в том числе для ручного перетаскивания scrollbar.
+     *
+     * При клике по navigation link pointerdown сработает раньше click:
+     * старый lock снимется, а handleNavClick затем установит новый target.
+     */
+    window.addEventListener("pointerdown", releaseNavigationLock, {
+      passive: true,
+    });
 
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("hashchange", handleHashChange);
+
+    /**
+     * Первый расчёт после того, как DOM уже существует.
+     * Это асинхронный RAF, поэтому здесь нет синхронного setState в effect.
+     *
+     * При initial hash updateActiveSection просто увидит navigation lock
+     * и не перетрёт корректный initial active state.
+     */
+    rafIdRef.current = requestAnimationFrame(updateActiveSection);
 
     return () => {
-      window.removeEventListener("scroll", throttledUpdateActiveSection);
-      window.removeEventListener("hashchange", handleHashChange);
-      window.removeEventListener("wheel", handleUserScrollIntent);
-      window.removeEventListener("touchstart", handleUserScrollIntent);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", releaseNavigationLock);
+      window.removeEventListener("touchstart", releaseNavigationLock);
+      window.removeEventListener("pointerdown", releaseNavigationLock);
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("hashchange", handleHashChange);
 
       if (rafIdRef.current !== null) {
         cancelAnimationFrame(rafIdRef.current);
@@ -185,27 +270,39 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) {
+      return;
+    }
 
-    const handleKey = (event: KeyboardEvent) => {
+    const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
       }
     };
 
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, [menuOpen]);
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false);
 
-    // Set navigation target immediately for programmatic scroll
-    const targetId = href.slice(1); // Remove '#' from href
-    navigationTargetRef.current = targetId;
-
-    // Set active section immediately to clicked item
+    navigationTargetRef.current = href.slice(1);
     setActiveSection(href);
+  };
+
+  const handleLogoClick = () => {
+    setMenuOpen(false);
+
+    /**
+     * Hero тоже считаем programmatic navigation,
+     * чтобы во время движения наверх пункты меню не мигали один за другим.
+     */
+    navigationTargetRef.current = "hero";
+    setActiveSection(null);
   };
 
   return (
@@ -217,13 +314,7 @@ export function Header() {
         href="#hero"
         className={styles.logo}
         aria-label="На главную"
-        onClick={() => {
-          // Clear navigation target when clicking logo
-          if (navigationTargetRef.current !== null) {
-            navigationTargetRef.current = null;
-            setActiveSection(null);
-          }
-        }}
+        onClick={handleLogoClick}
       >
         {"(˶˃ ᵕ ˂˶)"}
       </a>
@@ -233,33 +324,36 @@ export function Header() {
         className={styles.menuButton}
         aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
         aria-expanded={menuOpen}
-        onClick={() => setMenuOpen((prev) => !prev)}
+        onClick={() => setMenuOpen((current) => !current)}
       >
         <span className={styles.menuIcon} aria-hidden="true" />
       </button>
 
       <nav
         aria-label="Основная навигация"
-        className={`${styles.navigation} ${menuOpen ? styles.navigationOpen : ""}`}
+        className={`${styles.navigation} ${
+          menuOpen ? styles.navigationOpen : ""
+        }`}
       >
         <ul className={styles.navigationList}>
-          {NAVIGATION_ITEMS.map((nav) => (
-            <li key={nav.href} className={styles.navigationItem}>
-              <a
-                href={nav.href}
-                className={`${styles.navigationLink} ${
-                  activeSection === nav.href ? styles.active : ""
-                }`}
-                aria-current={activeSection === nav.href ? "true" : undefined}
-                onClick={() => {
-                  // Close menu and set target for scrollspy lock
-                  handleNavClick(nav.href);
-                }}
-              >
-                {nav.content}
-              </a>
-            </li>
-          ))}
+          {NAVIGATION_ITEMS.map((item) => {
+            const isActive = activeSection === item.href;
+
+            return (
+              <li key={item.href} className={styles.navigationItem}>
+                <a
+                  href={item.href}
+                  className={`${styles.navigationLink} ${
+                    isActive ? styles.active : ""
+                  }`}
+                  aria-current={isActive ? "location" : undefined}
+                  onClick={() => handleNavClick(item.href)}
+                >
+                  {item.content}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </header>
