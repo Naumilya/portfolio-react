@@ -24,13 +24,8 @@ export function Header() {
   const navigationTargetRef = useRef<string | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
-  const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasScrollEndSupportRef = useRef<boolean>(false);
 
   useEffect(() => {
-    // Check if browser supports scrollend event
-    hasScrollEndSupportRef.current = "onscrollend" in window;
-
     // Handle scroll for header styling
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -103,63 +98,22 @@ export function Header() {
       passive: true,
     });
 
-    // Handle scrollend event for programmatic navigation unlock
-    const handleScrollEnd = () => {
-      // Clear navigation target when scrolling ends
-      if (navigationTargetRef.current) {
-        navigationTargetRef.current = null;
-
-        // Run one final active section recalculation
-        updateActiveSection();
-      }
-
-      // Clear any pending scroll end timer
-      if (scrollEndTimerRef.current) {
-        clearTimeout(scrollEndTimerRef.current);
-        scrollEndTimerRef.current = null;
-      }
-    };
-
-    // Set up scrollend listener only if supported
-    if (hasScrollEndSupportRef.current) {
-      window.addEventListener("scrollend", handleScrollEnd);
-    } else {
-      // Fallback for browsers that don't support scrollend
-      const handleScrollEvent = () => {
-        if (scrollEndTimerRef.current) {
-          clearTimeout(scrollEndTimerRef.current);
-        }
-
-        scrollEndTimerRef.current = setTimeout(() => {
-          handleScrollEnd();
-        }, 150); // 150ms debounce for scroll settle detection
-      };
-
-      window.addEventListener("scroll", handleScrollEvent, { passive: true });
-    }
-
     // Handle hash changes
     const handleHashChange = () => {
       const hash = window.location.hash;
 
       if (NAVIGATION_ITEMS.some((item) => item.href === hash)) {
-        // For initial mount with hash, don't set a permanent lock
-        if (navigationTargetRef.current === null) {
-          // Set active section immediately to clicked item without setting navigation target
-          setActiveSection(hash);
-        } else {
-          // Set navigation target immediately for programmatic scroll
-          navigationTargetRef.current = hash.slice(1); // Remove '#' from href
+        // Set active section immediately to clicked item
+        setActiveSection(hash);
 
-          // Set active section immediately to clicked item
-          setActiveSection(hash);
-        }
+        // Set navigation target immediately for programmatic scroll
+        navigationTargetRef.current = hash.slice(1); // Remove '#' from href
       } else {
         // If hash doesn't match any section, set to empty
         setActiveSection(null);
 
-        // Clear navigation target when hash is empty
-        if (hash === "") {
+        // Clear navigation target when hash is empty or points to hero
+        if (hash === "" || hash === "#hero") {
           navigationTargetRef.current = null;
         }
       }
@@ -176,26 +130,56 @@ export function Header() {
         setTimeout(() => {
           setActiveSection(initialHash);
         }, 0);
+
+        // For initial hash, set the navigationTargetRef but only if it's not #hero
+        if (initialHash !== "#hero") {
+          navigationTargetRef.current = initialHash.slice(1);
+        }
       }
     }
 
+    // Release navigation lock on user scroll intent
+    const releaseNavigationLock = () => {
+      navigationTargetRef.current = null;
+    };
+
+    // Set up listeners for real user scrolling intent
+    const handleUserScrollIntent = () => {
+      releaseNavigationLock();
+    };
+
+    // Add listeners for various user scroll events
+    window.addEventListener("wheel", handleUserScrollIntent, { passive: true });
+    window.addEventListener("touchstart", handleUserScrollIntent, {
+      passive: true,
+    });
+
+    // Keyboard scrolling keys
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "ArrowUp" ||
+        event.key === "ArrowDown" ||
+        event.key === "PageUp" ||
+        event.key === "PageDown" ||
+        event.key === "Home" ||
+        event.key === "End" ||
+        event.key === " "
+      ) {
+        releaseNavigationLock();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("scroll", throttledUpdateActiveSection);
-
-      if (hasScrollEndSupportRef.current) {
-        window.removeEventListener("scrollend", handleScrollEnd);
-      } else {
-        // The handleScrollEvent function was defined inside the effect, so we can't reference it directly in cleanup
-        // We'll just remove the scroll listener that was added with a named function to avoid memory leaks
-      }
       window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("wheel", handleUserScrollIntent);
+      window.removeEventListener("touchstart", handleUserScrollIntent);
+      window.removeEventListener("keydown", handleKeyDown);
 
       if (rafIdRef.current !== null) {
         cancelAnimationFrame(rafIdRef.current);
-      }
-
-      if (scrollEndTimerRef.current) {
-        clearTimeout(scrollEndTimerRef.current);
       }
     };
   }, []);
@@ -229,7 +213,18 @@ export function Header() {
       ref={headerRef}
       className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}
     >
-      <a href="#hero" className={styles.logo} aria-label="На главную">
+      <a
+        href="#hero"
+        className={styles.logo}
+        aria-label="На главную"
+        onClick={() => {
+          // Clear navigation target when clicking logo
+          if (navigationTargetRef.current !== null) {
+            navigationTargetRef.current = null;
+            setActiveSection(null);
+          }
+        }}
+      >
         {"(˶˃ ᵕ ˂˶)"}
       </a>
 
