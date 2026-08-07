@@ -11,21 +11,32 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "mskburo",
-    title: "Сайт Московского конструкторского бюро",
-    description: "",
-    contribution: "",
-    stack: [],
-    image: "",
-    liveUrl: "https://mskburo.ru/",
-  },
-  {
     id: "lemanapro",
     title: "Лемана ПРО",
-    description: "",
-    contribution: "",
-    stack: [],
+    description:
+      "Крупный проект по разработке микрофронтендов для B2B/CRM-, HR- и административных систем.",
+    contribution:
+      "Создавал формы, карточки, поиск, фильтрацию и условное отображение данных. Интегрировал REST API и BFF, реализовал клиентскую часть real-time чата через WebSocket. Работал с legacy-кодом, Storybook, SonarQube, code review, тестированием и релизами.",
+    stack: [
+      "React",
+      "TypeScript",
+      "Redux Toolkit",
+      "REST API",
+      "WebSocket",
+      "Storybook",
+    ],
     image: "",
     liveUrl: "https://lemanapro.ru/",
+  },
+  {
+    id: "mskburo",
+    title: "Московское экскурсионное бюро",
+    description:
+      "Коммерческий сайт экскурсионного бюро с презентацией экскурсий и услуг компании.",
+    contribution:
+      "Разрабатывал и поддерживал сайт mskburo.ru. Создавал страницы, компоненты, формы и интерактивные элементы. Работал с API и данными, исправлял ошибки и сопровождал проект после запуска.",
+    stack: ["React", "TypeScript", "HTML & CSS", "REST API"],
+    image: "",
+    liveUrl: "https://mskburo.ru/",
   },
 ];

@@ -1,0 +1,112 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(240px, 2fr);
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 440px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.prompt {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-bold);
+}
+
+.hgroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.highlight {
+  background-color: var(--color-accent);
+  color: var(--color-background);
+  padding: 0 var(--space-1);
+}
+
+.actions {
+  padding-top: var(--space-10);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.primaryBtn {
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+
+.primaryBtn:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
+}
+
+.secondaryBtn {
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.secondaryBtn:hover {
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+  transform: translateY(-2px);
+}
+
+.tertiaryLink {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.tertiaryLink:hover {
+  color: var(--color-accent);
+}
+
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  height: 440px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .canvasWrapper {
+    height: 320px;
+  }
+}

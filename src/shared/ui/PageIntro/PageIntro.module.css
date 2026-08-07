@@ -1,0 +1,46 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-base) var(--ease-smooth);
+}
+
+.intro.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ascii {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-3xl);
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.line {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: line-in 0.4s var(--ease-out) forwards;
+}
+
+@keyframes line-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+}

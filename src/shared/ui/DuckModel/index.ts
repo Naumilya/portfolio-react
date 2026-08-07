@@ -1,0 +1,1 @@
+export { DuckModel } from "./DuckModel";

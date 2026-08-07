@@ -1,0 +1,1 @@
+export { DuckSprites } from "./DuckSprites";

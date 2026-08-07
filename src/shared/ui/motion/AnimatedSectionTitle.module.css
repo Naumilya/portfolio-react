@@ -1,0 +1,13 @@
+.title {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+.title.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
