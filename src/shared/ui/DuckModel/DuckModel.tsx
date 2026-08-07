@@ -1,42 +1,91 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
-import type { Group } from "three";
+import { useEffect, useMemo, useRef } from "react";
+import { MathUtils, Mesh, type Group } from "three";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 import duckModel from "@/shared/models/duckVox.glb?url";
 
 interface DuckModelProps {
   position?: [number, number, number];
   scale?: number;
+  reducedMotion?: boolean;
 }
 
-export function DuckModel({ position = [0, 0, 0], scale = 1 }: DuckModelProps) {
-  const groupRef = useRef<Group>(null);
+export function DuckModel({
+  position = [0, 0, 0],
+  scale = 1,
+  reducedMotion = false,
+}: DuckModelProps) {
+  const motionRef = useRef<Group | null>(null);
+  const animationFinishedRef = useRef(reducedMotion);
+
   const { scene } = useGLTF(duckModel);
-  const [hovered, setHovered] = useState(false);
 
-  useFrame((state) => {
-    if (!groupRef.current) return;
+  /*
+   * Не используем исходный scene напрямую.
+   *
+   * Это особенно важно, если позже окажется, что модель
+   * содержит skeleton / animation clips.
+   */
+  const duckScene = useMemo(() => clone(scene), [scene]);
 
-    const time = state.clock.elapsedTime;
+  useEffect(() => {
+    duckScene.traverse((object) => {
+      if (!(object instanceof Mesh)) {
+        return;
+      }
 
-    groupRef.current.position.y = position[1] + Math.sin(time * 1.2) * 0.12;
-    groupRef.current.rotation.z = Math.sin(time * 0.8) * 0.05;
+      object.castShadow = true;
+      object.receiveShadow = true;
+    });
+  }, [duckScene]);
 
-    if (hovered) {
-      groupRef.current.position.y += 0.08;
+  useFrame((_, delta) => {
+    const group = motionRef.current;
+
+    if (!group || reducedMotion || animationFinishedRef.current) {
+      return;
+    }
+
+    /*
+     * Небольшая entrance-анимация.
+     *
+     * Не заставляем утку бесконечно подпрыгивать и качаться.
+     * После появления модель остаётся физически стабильной,
+     * а движение сцены обеспечивает OrbitControls.
+     */
+    const nextScale = MathUtils.damp(group.scale.x, 1, 7, delta);
+
+    const nextRotationX = MathUtils.damp(group.rotation.x, 0, 6, delta);
+
+    const nextRotationY = MathUtils.damp(group.rotation.y, 0, 5, delta);
+
+    group.scale.setScalar(nextScale);
+    group.rotation.x = nextRotationX;
+    group.rotation.y = nextRotationY;
+
+    const scaleFinished = Math.abs(1 - nextScale) < 0.001;
+    const xFinished = Math.abs(nextRotationX) < 0.001;
+    const yFinished = Math.abs(nextRotationY) < 0.001;
+
+    if (scaleFinished && xFinished && yFinished) {
+      group.scale.setScalar(1);
+      group.rotation.set(0, 0, 0);
+
+      animationFinishedRef.current = true;
     }
   });
 
   return (
-    <group
-      ref={groupRef}
-      position={position}
-      scale={scale}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <primitive object={scene} />
+    <group position={position} scale={scale}>
+      <group
+        ref={motionRef}
+        scale={reducedMotion ? 1 : 0.8}
+        rotation={reducedMotion ? [0, 0, 0] : [0.1, -0.65, 0]}
+      >
+        <primitive object={duckScene} />
+      </group>
     </group>
   );
 }
