@@ -5,20 +5,15 @@ export interface SetupCategory {
 
 export const setup: SetupCategory[] = [
   {
-    title: "Оборудование",
-    items: [
-      'MacBook Pro 14"',
-      'Монитор 27" 4K',
-      "Механическая клавиатура",
-      "Мышь Logitech MX Master",
-    ],
+    title: "Среда",
+    items: ["Windows"],
   },
   {
-    title: "ПО",
-    items: ["VS Code", "Figma", "iTerm2", "Docker Desktop"],
+    title: "Стек",
+    items: ["React + TypeScript", "Vite"],
   },
   {
     title: "Инструменты",
-    items: ["Git / GitHub", "ESLint / Prettier", "Vite", "Chrome DevTools"],
+    items: ["VS Code", "Git / GitHub", "ESLint"],
   },
 ];
