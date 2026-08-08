@@ -65,9 +65,9 @@ export const personalProjects: PersonalProject[] = [
     title: "JobRadar",
     status: "in-progress",
     description:
-      "TODO: добавить описание проекта. Что это, какую проблему решает.",
-    problem: "TODO: какую проблему решает проект.",
-    architecture: "TODO: описать архитектуру.",
+      "Telegram Mini App для поиска и разбора вакансий: лента, фильтры и быстрый просмотр подходящих позиций.",
+    problem: "Сократить ручной поиск вакансий по разным источникам и быстрее отсеивать нерелевантные позиции.",
+    architecture: "Node.js + TypeScript для бота и работы с данными, Vite + React + TypeScript для Telegram Mini App .",
     keyDecisions: ["TODO: ключевые решения"],
     challenges: ["TODO: проблемы и как решались"],
     working: ["TODO: что уже работает"],
