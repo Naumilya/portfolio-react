@@ -1,4 +1,3 @@
-import { DuckSprites } from "@/shared/ui/DuckSprites";
 import { PageIntro } from "@/shared/ui/PageIntro";
 import { AboutSection } from "@/widgets/about";
 import { ContactsSection } from "@/widgets/contacts";
@@ -15,7 +14,6 @@ export function HomePage() {
   return (
     <>
       <PageIntro />
-      <DuckSprites />
       <Header />
 
       <main className="main-content">
