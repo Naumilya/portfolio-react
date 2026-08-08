@@ -30,6 +30,7 @@ export function ProjectsSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.link}
+                    aria-label={`Открыть сайт проекта ${project.title}`}
                   >
                     Открыть сайт
                   </a>
