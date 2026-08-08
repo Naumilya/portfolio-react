@@ -84,6 +84,18 @@ export function ProjectsSection() {
                 ))}
               </ul>
             </div>
+
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.link}
+                aria-label={`Открыть GitHub проекта ${project.title}`}
+              >
+                GitHub →
+              </a>
+            )}
           </article>
         ))}
       </section>
