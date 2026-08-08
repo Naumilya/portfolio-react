@@ -317,13 +317,16 @@ export function Header() {
       return;
     }
 
-    setLogoSectionReacting(true);
+    const frameId = requestAnimationFrame(() => {
+      setLogoSectionReacting(true);
+    });
 
     const timerId = setTimeout(() => {
       setLogoSectionReacting(false);
     }, 440);
 
     return () => {
+      cancelAnimationFrame(frameId);
       clearTimeout(timerId);
     };
   }, [activeSection]);
