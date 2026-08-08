@@ -27,6 +27,10 @@
   border-bottom-color: var(--color-border);
 }
 
+.scrolled .logo {
+  animation: logo-reaction 520ms ease-out;
+}
+
 .logo {
   color: var(--color-accent);
   transition: color var(--transition-fast);
@@ -166,5 +170,13 @@
 
   .navigationLink.active::after {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo:hover,
+  .logo:focus-visible,
+  .scrolled .logo {
+    animation: none;
   }
 }
