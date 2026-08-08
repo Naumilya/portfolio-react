@@ -83,9 +83,11 @@ export function Header() {
     getInitialActiveSection,
   );
   const [logoFrameIndex, setLogoFrameIndex] = useState<number | null>(null);
+  const [logoSectionReacting, setLogoSectionReacting] = useState(false);
 
   const headerRef = useRef<HTMLElement | null>(null);
   const logoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const logoSectionMountedRef = useRef(false);
 
   /**
    * Пока здесь есть target, viewport движется к секции через anchor navigation.
@@ -306,6 +308,27 @@ export function Header() {
   }, [menuOpen]);
 
   useEffect(() => {
+    if (!logoSectionMountedRef.current) {
+      logoSectionMountedRef.current = true;
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    setLogoSectionReacting(true);
+
+    const timerId = setTimeout(() => {
+      setLogoSectionReacting(false);
+    }, 440);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [activeSection]);
+
+  useEffect(() => {
     return () => {
       if (logoTimerRef.current !== null) {
         clearInterval(logoTimerRef.current);
@@ -377,13 +400,23 @@ export function Header() {
     >
       <a
         href="#hero"
-        className={styles.logo}
+        className={`${styles.logo} ${
+          logoSectionReacting ? styles.logoSectionReaction : ""
+        }`}
         aria-label="На главную"
         onClick={handleLogoClick}
         onMouseEnter={playLogoReaction}
         onFocus={playLogoReaction}
       >
-        {displayedLogo}
+        {Array.from(displayedLogo).map((glyph, index) => (
+          <span
+            key={`${displayedLogo}-${index}`}
+            className={styles.logoGlyph}
+            style={{ animationDelay: `${index * 22}ms` }}
+          >
+            {glyph === " " ? "\u00A0" : glyph}
+          </span>
+        ))}
       </a>
 
       <button
