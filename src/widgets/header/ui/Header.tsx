@@ -26,6 +26,13 @@ const SCROLL_KEYS = new Set([
   " ",
 ]);
 
+const LOGO_FRAMES = [
+  "(˶˃ ᵕ ˂˶)",
+  "(˶˃ ᴗ ᵔ˶)",
+  "(˶ᵔ ᴗ ˂˶)",
+  "(˶˃ ᵕ ˂˶)",
+] as const;
+
 function isNavigationHash(hash: string) {
   return NAVIGATION_ITEMS.some((item) => item.href === hash);
 }
@@ -66,8 +73,10 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string | null>(
     getInitialActiveSection,
   );
+  const [logoFrameIndex, setLogoFrameIndex] = useState(0);
 
   const headerRef = useRef<HTMLElement | null>(null);
+  const logoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /**
    * Пока здесь есть target, viewport движется к секции через anchor navigation.
@@ -287,6 +296,49 @@ export function Header() {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    return () => {
+      if (logoTimerRef.current !== null) {
+        clearInterval(logoTimerRef.current);
+      }
+    };
+  }, []);
+
+  const playLogoReaction = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (logoTimerRef.current !== null) {
+        clearInterval(logoTimerRef.current);
+        logoTimerRef.current = null;
+      }
+
+      setLogoFrameIndex(0);
+      return;
+    }
+
+    if (logoTimerRef.current !== null) {
+      clearInterval(logoTimerRef.current);
+    }
+
+    let nextFrameIndex = 1;
+    setLogoFrameIndex(nextFrameIndex);
+
+    logoTimerRef.current = setInterval(() => {
+      nextFrameIndex += 1;
+
+      if (nextFrameIndex >= LOGO_FRAMES.length) {
+        if (logoTimerRef.current !== null) {
+          clearInterval(logoTimerRef.current);
+          logoTimerRef.current = null;
+        }
+
+        setLogoFrameIndex(0);
+        return;
+      }
+
+      setLogoFrameIndex(nextFrameIndex);
+    }, 160);
+  };
+
   const handleNavClick = (href: string) => {
     setMenuOpen(false);
 
@@ -315,8 +367,10 @@ export function Header() {
         className={styles.logo}
         aria-label="На главную"
         onClick={handleLogoClick}
+        onMouseEnter={playLogoReaction}
+        onFocus={playLogoReaction}
       >
-        {"(˶˃ ᵕ ˂˶)"}
+        {LOGO_FRAMES[logoFrameIndex]}
       </a>
 
       <button
