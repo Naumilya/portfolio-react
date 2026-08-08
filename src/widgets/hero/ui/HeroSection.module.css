@@ -80,6 +80,7 @@
   background: var(--color-accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  transition: all 300ms ease;
 }
 
 .secondaryBtn {
@@ -92,6 +93,7 @@
   border-color: var(--color-border-hover);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  transition: all 300ms ease;
 }
 
 .tertiaryLink {
@@ -105,6 +107,7 @@
 .tertiaryLink:hover {
   color: var(--color-accent);
   text-decoration: underline;
+  transition: color 300ms ease;
 }
 
 .canvasWrapper {
@@ -117,10 +120,12 @@
   touch-action: pan-y;
 
   transition: box-shadow 300ms ease;
+  transition: all 300ms ease;
 }
 
 .canvasWrapper:hover {
   box-shadow: 0 0 20px rgb(0 0 0 / 15%);
+  transition: box-shadow 300ms ease;
 }
 
 .canvasWrapper:active {
@@ -167,11 +172,13 @@
 .interactionHintReady {
   opacity: 0.72;
   transform: translate(-50%, 0);
+  transition: all 300ms ease;
 }
 
 .interactionHintHidden {
   opacity: 0;
   transform: translate(-50%, 4px);
+  transition: all 300ms ease;
 }
 
 .interactionDot {
@@ -189,6 +196,7 @@
 @media (hover: hover) {
   .canvasWrapper:hover .interactionHintReady:not(.interactionHintHidden) {
     opacity: 1;
+    transition: opacity 300ms ease;
   }
 }
 
