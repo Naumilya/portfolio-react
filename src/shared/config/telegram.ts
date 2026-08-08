@@ -15,7 +15,7 @@ export interface TelegramChannel {
 }
 
 export const telegramChannel: TelegramChannel = {
-  name: "Утка в сети",
+  name: "Уточка в сети 🌐",
   handle: "@duck_in_the_net",
   url: "https://t.me/duck_in_the_net",
   description:
