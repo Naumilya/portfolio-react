@@ -29,6 +29,7 @@ export function TelegramSection() {
         </div>
       </div>
 
+      {mainPost && (
       <div className={styles.preview} ref={postsRef}>
         <article className={styles.mainPost}>
           <div className={styles.postHeader}>
@@ -65,6 +66,7 @@ export function TelegramSection() {
           ))}
         </div>
       </div>
+      )}
     </section>
   );
 }
