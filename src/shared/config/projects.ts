@@ -72,5 +72,6 @@ export const personalProjects: PersonalProject[] = [
     challenges: ["Ограничения и изменения внешних API вакансий", "Работа с Telegram Bot API и сетевыми ограничениями"],
     working: ["Локальный Telegram-бот", "React-интерфейс Mini App", "Прототип ленты вакансий на тестовых данных"],
     roadmap: ["Подключить устойчивые источники вакансий", "Доработать фильтры и хранение пользовательских настроек", "Подготовить публичную демо-версию"],
+  githubUrl: "https://github.com/Naumilya/JobRadar",
   },
 ];
