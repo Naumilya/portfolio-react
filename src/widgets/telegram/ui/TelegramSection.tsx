@@ -42,10 +42,10 @@ export function TelegramSection() {
           </div>
           <p className={styles.postText}>{mainPost.text}</p>
           <div className={styles.postFooter}>
-            <span className={styles.postViews} aria-label="Просмотры {mainPost.views}">
+            <span className={styles.postViews} aria-label={`Просмотры ${mainPost.views}`}>
               👁 {mainPost.views}
             </span>
-            <span className={styles.postReactions} aria-label="Реакции {mainPost.reactions}">
+            <span className={styles.postReactions} aria-label={`Реакции ${mainPost.reactions}`}>
               {mainPost.reactions}
             </span>
           </div>
@@ -68,10 +68,10 @@ export function TelegramSection() {
               </div>
               <p className={styles.postText}>{post.text}</p>
               <div className={styles.postFooter}>
-                <span className={styles.postViews} aria-label="Просмотры {post.views}">
+                <span className={styles.postViews} aria-label={`Просмотры ${post.views}`}>
                   👁 {post.views}
                 </span>
-                <span className={styles.postReactions} aria-label="Реакции {post.reactions}">
+                <span className={styles.postReactions} aria-label={`Реакции ${post.reactions}`}>
                   {post.reactions}
                 </span>
               </div>
