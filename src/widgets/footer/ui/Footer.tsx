@@ -8,8 +8,8 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.left}>
-        <span className={styles.copy} aria-hidden="true">
-          {"(c)"} {year} {siteConfig.name}
+        <span className={styles.copy}>
+          © {year} {siteConfig.name}
         </span>
       </div>
 
