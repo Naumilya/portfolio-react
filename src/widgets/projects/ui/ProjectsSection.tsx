@@ -1,7 +1,7 @@
-import { personalProjects, projects } from '@/shared/config/projects';
-import { useReveal } from '@/shared/lib/useReveal';
+import { personalProjects, projects } from "@/shared/config/projects";
+import { useReveal } from "@/shared/lib/useReveal";
 
-import styles from './ProjectsSection.module.css';
+import styles from "./ProjectsSection.module.css";
 
 export function ProjectsSection() {
   const sectionRef = useReveal<HTMLElement>();
