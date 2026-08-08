@@ -57,6 +57,13 @@
   gap: var(--space-4);
 }
 
+.mainPost,
+.secondaryPost {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .mainPost {
   padding: var(--space-5);
   background: var(--color-background-elevated);
@@ -70,6 +77,12 @@
 .mainPost:hover {
   border-color: var(--color-border-hover);
   transform: translateY(-2px);
+}
+
+.mainPost:focus-visible,
+.secondaryPost:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .postHeader {
@@ -111,14 +124,7 @@
 .postText {
   font-size: var(--font-size-md);
   line-height: var(--line-height-base);
-}
-
-.postFooter {
-  display: flex;
-  gap: var(--space-4);
-  margin-top: var(--space-3);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  white-space: pre-line;
 }
 
 .secondaryPosts {
