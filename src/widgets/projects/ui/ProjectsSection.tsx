@@ -77,10 +77,12 @@ export function ProjectsSection() {
             </div>
             <p className={styles.description}>{project.description}</p>
             <div className={styles.contribution}>
-              <h4 className={styles.contributionTitle}>Статус</h4>
-              <p>
-                Собственный проект в разработке. Подробности появятся позже.
-              </p>
+              <h4 className={styles.contributionTitle}>Что уже работает</h4>
+              <ul className={styles.stackList}>
+                {project.working.map((item) => (
+                  <li key={item} className={styles.tech}>{item}</li>
+                ))}
+              </ul>
             </div>
           </article>
         ))}
