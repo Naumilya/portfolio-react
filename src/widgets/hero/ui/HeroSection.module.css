@@ -79,6 +79,7 @@
 .primaryBtn:hover {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
 }
 
 .secondaryBtn {
@@ -90,6 +91,7 @@
   color: var(--color-text-primary);
   border-color: var(--color-border-hover);
   transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
 }
 
 .tertiaryLink {
@@ -102,6 +104,7 @@
 
 .tertiaryLink:hover {
   color: var(--color-accent);
+  text-decoration: underline;
 }
 
 .canvasWrapper {
@@ -112,6 +115,12 @@
 
   cursor: grab;
   touch-action: pan-y;
+
+  transition: box-shadow 300ms ease;
+}
+
+.canvasWrapper:hover {
+  box-shadow: 0 0 20px rgb(0 0 0 / 15%);
 }
 
 .canvasWrapper:active {
@@ -147,6 +156,12 @@
   transition:
     opacity 300ms ease,
     transform 300ms ease;
+}
+
+@media (max-width: 768px) {
+  .interactionHint {
+    bottom: 8px;
+  }
 }
 
 .interactionHintReady {
