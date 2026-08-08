@@ -1,9 +1,22 @@
 import { siteConfig } from "@/shared/config/site";
 
 import styles from "./Footer.module.css";
+import { useState } from "react";
+
+const quotes = [
+  "Talk is cheap. Show me the code. — Linus Torvalds",
+  "Simplicity is prerequisite for reliability. — Edsger W. Dijkstra",
+  "Premature optimization is the root of all evil. — Donald Knuth",
+  "Programs must be written for people to read. — Harold Abelson & Gerald Jay Sussman"
+];
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+
+  const handleFortuneClick = () => {
+    setCurrentIndex((prev) => (prev + 1) % quotes.length);
+  };
 
   return (
     <footer className={styles.footer}>
@@ -11,9 +24,23 @@ export function Footer() {
         <span className={styles.copy}>
           © {year} {siteConfig.name}
         </span>
+        {currentIndex !== -1 && (
+          <span className={styles.quote}>
+            {quotes[currentIndex]}
+          </span>
+        )}
       </div>
 
       <div className={styles.right}>
+        <button
+          type="button"
+          onClick={handleFortuneClick}
+          className={styles.fortuneButton}
+          aria-label="Show random developer quote"
+        >
+          $ fortune
+        </button>
+        <span className={styles.divider} aria-hidden="true" />
         <a
           href={siteConfig.github}
           target="_blank"
