@@ -173,6 +173,21 @@
   }
 }
 
+@keyframes logo-reaction {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  35% {
+    transform: translateY(-2px) rotate(-4deg) scale(1.06);
+  }
+
+  65% {
+    transform: translateY(1px) rotate(3deg) scale(0.99);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .logo:hover,
   .logo:focus-visible,
