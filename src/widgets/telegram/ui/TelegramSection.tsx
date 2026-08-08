@@ -30,42 +30,50 @@ export function TelegramSection() {
       </div>
 
       {mainPost && (
-      <div className={styles.preview} ref={postsRef}>
-        <article className={styles.mainPost}>
-          <div className={styles.postHeader}>
-            <span className={styles.avatar} aria-hidden="true">
-              🦆
-            </span>
-            <div className={styles.postMeta}>
-              <span className={styles.channelName}>{telegramChannel.name}</span>
-              <span className={styles.postDate}>{mainPost.date}</span>
-            </div>
-          </div>
-          <p className={styles.postText}>{mainPost.text}</p>
-
-        </article>
-
-        <div className={styles.secondaryPosts}>
-          {secondaryPosts.map((post, index) => (
-            <article
-              key={post.id}
-              className={styles.secondaryPost}
-              style={{ animationDelay: `${0.2 + index * 0.15}s` }}
-            >
-              <div className={styles.postHeader}>
-                <div className={styles.postMeta}>
-                  <span className={styles.channelName}>
-                    {telegramChannel.name}
-                  </span>
-                  <span className={styles.postDate}>{post.date}</span>
-                </div>
+        <div className={styles.preview} ref={postsRef}>
+          <a
+            href={mainPost.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mainPost}
+            aria-label="Открыть пост в Telegram"
+          >
+            <div className={styles.postHeader}>
+              <span className={styles.avatar} aria-hidden="true">
+                🦆
+              </span>
+              <div className={styles.postMeta}>
+                <span className={styles.channelName}>{telegramChannel.name}</span>
+                <span className={styles.postDate}>{mainPost.date}</span>
               </div>
-              <p className={styles.postText}>{post.text}</p>
+            </div>
+            <p className={styles.postText}>{mainPost.text}</p>
+          </a>
 
-            </article>
-          ))}
+          <div className={styles.secondaryPosts}>
+            {secondaryPosts.map((post, index) => (
+              <a
+                key={post.id}
+                href={post.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.secondaryPost}
+                aria-label="Открыть пост в Telegram"
+                style={{ animationDelay: `${0.2 + index * 0.15}s` }}
+              >
+                <div className={styles.postHeader}>
+                  <div className={styles.postMeta}>
+                    <span className={styles.channelName}>
+                      {telegramChannel.name}
+                    </span>
+                    <span className={styles.postDate}>{post.date}</span>
+                  </div>
+                </div>
+                <p className={styles.postText}>{post.text}</p>
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
       )}
     </section>
   );
