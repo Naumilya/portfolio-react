@@ -5,19 +5,19 @@ export interface SkillGroup {
 
 export const skillGroups: SkillGroup[] = [
   {
-    title: "Core",
-    skills: ["React", "TypeScript", "JavaScript"],
+    title: "Languages",
+    skills: ["JavaScript", "TypeScript", "HTML", "CSS"],
   },
   {
     title: "Frontend",
-    skills: ["HTML", "CSS", "Redux Toolkit"],
+    skills: ["React", "Redux Toolkit"],
   },
   {
-    title: "Data / integration",
+    title: "Integration",
     skills: ["REST API", "WebSocket"],
   },
   {
-    title: "Workflow",
+    title: "Engineering",
     skills: ["Git", "Vite", "Testing"],
   },
 ];
