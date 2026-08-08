@@ -44,6 +44,11 @@
 
 .logo:hover {
   color: var(--color-accent-hover);
+  animation: logo-reaction 520ms ease-out;
+}
+
+.logo:focus-visible {
+  animation: logo-reaction 520ms ease-out;
 }
 
 .menuButton {
