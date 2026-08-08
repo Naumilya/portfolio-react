@@ -33,6 +33,15 @@ const LOGO_FRAMES = [
   "(˶˃ ᵕ ˂˶)",
 ] as const;
 
+const LOGO_FACES: Record<string, string> = {
+  "#about": "(˶˃ ᵕ ˂˶)",
+  "#experience": "( •̀ᴗ•́ )",
+  "#projects": "(⌐■_■)",
+  "#telegram": "( •̀ڡ•́ )",
+  "#setup": "(¬‿¬)",
+  "#contacts": "(ᵔ◡ᵔ)",
+};
+
 function isNavigationHash(hash: string) {
   return NAVIGATION_ITEMS.some((item) => item.href === hash);
 }
@@ -73,7 +82,7 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string | null>(
     getInitialActiveSection,
   );
-  const [logoFrameIndex, setLogoFrameIndex] = useState(0);
+  const [logoFrameIndex, setLogoFrameIndex] = useState<number | null>(null);
 
   const headerRef = useRef<HTMLElement | null>(null);
   const logoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -311,7 +320,7 @@ export function Header() {
         logoTimerRef.current = null;
       }
 
-      setLogoFrameIndex(0);
+      setLogoFrameIndex(null);
       return;
     }
 
@@ -331,7 +340,7 @@ export function Header() {
           logoTimerRef.current = null;
         }
 
-        setLogoFrameIndex(0);
+        setLogoFrameIndex(null);
         return;
       }
 
@@ -357,6 +366,10 @@ export function Header() {
     setActiveSection(null);
   };
 
+  const restingLogo = LOGO_FACES[activeSection ?? "#about"] ?? LOGO_FRAMES[0];
+  const displayedLogo =
+    logoFrameIndex === null ? restingLogo : LOGO_FRAMES[logoFrameIndex];
+
   return (
     <header
       ref={headerRef}
@@ -370,7 +383,7 @@ export function Header() {
         onMouseEnter={playLogoReaction}
         onFocus={playLogoReaction}
       >
-        {LOGO_FRAMES[logoFrameIndex]}
+        {displayedLogo}
       </a>
 
       <button
