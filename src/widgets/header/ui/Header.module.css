@@ -27,28 +27,16 @@
   border-bottom-color: var(--color-border);
 }
 
-.scrolled .logo {
-  animation: logo-reaction 520ms ease-out;
-}
-
 .logo {
   color: var(--color-accent);
   display: inline-block;
-  transform-origin: center;
-  transition:
-    color var(--transition-fast),
-    transform var(--transition-fast);
+  transition: color var(--transition-fast);
   font-size: var(--font-size-3xl);
   line-height: 1;
 }
 
 .logo:hover {
   color: var(--color-accent-hover);
-  animation: logo-reaction 520ms ease-out;
-}
-
-.logo:focus-visible {
-  animation: logo-reaction 520ms ease-out;
 }
 
 .menuButton {
@@ -186,36 +174,5 @@
 
   .navigationLink.active::after {
     display: none;
-  }
-}
-
-@keyframes logo-reaction {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-
-  35% {
-    transform: translateY(-2px) rotate(-4deg) scale(1.06);
-  }
-
-  65% {
-    transform: translateY(1px) rotate(3deg) scale(0.99);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo:hover,
-  .logo:focus-visible,
-  .scrolled .logo {
-    animation: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo:hover,
-  .logo:focus-visible,
-  .scrolled .logo {
-    animation: none;
   }
 }
