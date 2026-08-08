@@ -77,6 +77,14 @@ export function ProjectsSection() {
             </div>
             <p className={styles.description}>{project.description}</p>
             <div className={styles.contribution}>
+              <h4 className={styles.contributionTitle}>Задача</h4>
+              <p>{project.problem}</p>
+            </div>
+            <div className={styles.contribution}>
+              <h4 className={styles.contributionTitle}>Архитектура</h4>
+              <p>{project.architecture}</p>
+            </div>
+            <div className={styles.contribution}>
               <h4 className={styles.contributionTitle}>Что уже работает</h4>
               <ul className={styles.stackList}>
                 {project.working.map((item) => (
