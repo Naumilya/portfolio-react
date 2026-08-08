@@ -99,3 +99,70 @@
   color: var(--color-text-secondary);
 }
 
+.personalCard {
+  gap: var(--space-6);
+}
+
+.statusBadge {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+  border-radius: var(--radius-round);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  color: var(--color-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.caseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.caseBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.caseTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.workingBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.workingBlock .stackList {
+  margin-top: 0;
+}
+
+.projectAction {
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-6);
+  }
+
+  .caseGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader {
+    flex-direction: column;
+  }
+}
