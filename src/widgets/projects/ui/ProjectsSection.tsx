@@ -64,31 +64,42 @@ export function ProjectsSection() {
         <h2 className={styles.title}>Свои проекты</h2>
 
         {personalProjects.map((project) => (
-          <article key={project.id} className={styles.card}>
+          <article
+            key={project.id}
+            className={`${styles.card} ${styles.personalCard}`}
+          >
             <div className={styles.cardHeader}>
               <div>
                 <h3 className={styles.cardTitle}>{project.title}</h3>
-                <p className={styles.cardType}>
-                  {project.status === "in-progress"
-                    ? "В разработке"
-                    : "Запланирован"}
-                </p>
+                <p className={styles.cardType}>Telegram Mini App</p>
+              </div>
+              <span className={styles.statusBadge}>
+                {project.status === "in-progress"
+                  ? "В разработке"
+                  : "Запланирован"}
+              </span>
+            </div>
+
+            <p className={styles.description}>{project.description}</p>
+
+            <div className={styles.caseGrid}>
+              <div className={styles.caseBlock}>
+                <h4 className={styles.caseTitle}>Зачем</h4>
+                <p>{project.problem}</p>
+              </div>
+              <div className={styles.caseBlock}>
+                <h4 className={styles.caseTitle}>Как устроено</h4>
+                <p>{project.architecture}</p>
               </div>
             </div>
-            <p className={styles.description}>{project.description}</p>
-            <div className={styles.contribution}>
-              <h4 className={styles.contributionTitle}>Задача</h4>
-              <p>{project.problem}</p>
-            </div>
-            <div className={styles.contribution}>
-              <h4 className={styles.contributionTitle}>Архитектура</h4>
-              <p>{project.architecture}</p>
-            </div>
-            <div className={styles.contribution}>
-              <h4 className={styles.contributionTitle}>Что уже работает</h4>
+
+            <div className={styles.workingBlock}>
+              <h4 className={styles.caseTitle}>Уже работает</h4>
               <ul className={styles.stackList}>
                 {project.working.map((item) => (
-                  <li key={item} className={styles.tech}>{item}</li>
+                  <li key={item} className={styles.tech}>
+                    {item}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -98,10 +109,10 @@ export function ProjectsSection() {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={styles.link}
+                className={`${styles.link} ${styles.projectAction}`}
                 aria-label={`Открыть GitHub проекта ${project.title}`}
               >
-                GitHub →
+                Смотреть код на GitHub →
               </a>
             )}
           </article>
