@@ -1,11 +1,11 @@
 import styles from "./TrustSection.module.css";
 
 const PROOF_POINTS = [
-  "React / TypeScript",
-  "Commercial products",
-  "REST / WebSocket",
-  "Testing",
-  "Git",
+  "Коммерческий React / TypeScript",
+  "Микрофронтенды",
+  "REST / BFF / WebSocket",
+  "Legacy • code review • releases",
+  "40+ freelance-заказов",
 ];
 
 export function TrustSection() {
