@@ -33,7 +33,11 @@
 
 .logo {
   color: var(--color-accent);
-  transition: color var(--transition-fast);
+  display: inline-block;
+  transform-origin: center;
+  transition:
+    color var(--transition-fast),
+    transform var(--transition-fast);
   font-size: var(--font-size-3xl);
   line-height: 1;
 }
