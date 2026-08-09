@@ -1,5 +1,6 @@
 import { setup } from "@/shared/config/setup";
 import { useReveal } from "@/shared/lib/useReveal";
+import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./SetupSection.module.css";
 
@@ -8,7 +9,12 @@ export function SetupSection() {
 
   return (
     <section id="setup" ref={sectionRef} className={`${styles.setup} reveal`}>
-      <h2 className={styles.title}>Сетап</h2>
+      <SectionHeading
+        index="05"
+        eyebrow="Workspace"
+        title="Сетап"
+        description="Железо, периферия и инструменты, которыми пользуюсь в работе и своих проектах."
+      />
 
       <div className={styles.grid}>
         {setup.map((category) => (
