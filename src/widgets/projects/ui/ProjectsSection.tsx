@@ -1,4 +1,4 @@
-import { personalProjects, projects } from "@/shared/config/projects";
+import { personalProjects } from "@/shared/config/projects";
 import { useReveal } from "@/shared/lib/useReveal";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
 
@@ -15,69 +15,18 @@ export function ProjectsSection() {
     >
       <SectionHeading
         index="03"
-        eyebrow="Selected work"
-        title="Работы"
-        description="Коммерческие кейсы и собственный продукт: контекст задачи, мой вклад и технические решения."
+        eyebrow="Personal projects"
+        title="Свои проекты"
+        description="Проекты, где я сам принимаю продуктовые и технические решения — от идеи и архитектуры до интерфейса и кода."
       />
-
-      <div className={styles.projectList}>
-        {projects.map((project, index) => (
-          <article key={project.id} className={styles.card}>
-            <div className={styles.cardTopline}>
-              <span className={styles.projectIndex} aria-hidden="true">
-                {String(index + 1).padStart(2, "0")} / commercial
-              </span>
-
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                  aria-label={`Открыть сайт проекта ${project.title}`}
-                >
-                  Открыть сайт ↗
-                </a>
-              )}
-            </div>
-
-            <div className={styles.cardHeader}>
-              <div>
-                <h3 className={styles.cardTitle}>{project.title}</h3>
-                <p className={styles.cardType}>{project.type}</p>
-              </div>
-              <p className={styles.description}>{project.description}</p>
-            </div>
-
-            <div className={styles.caseGrid}>
-              <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Мой вклад</h4>
-                <p>{project.contribution}</p>
-              </div>
-
-              <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Задача</h4>
-                <p>{project.task}</p>
-              </div>
-            </div>
-
-            <ul className={styles.stackList} aria-label="Стек проекта">
-              {project.stack.map((tech) => (
-                <li key={tech} className={styles.tech}>
-                  {tech}
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </div>
 
       <div id="own-projects" className={styles.personalSection}>
         <div className={styles.personalIntro}>
-          <span className={styles.personalEyebrow}>Lab / personal</span>
-          <h3 className={styles.personalTitle}>JobRadar</h3>
+          <span className={styles.personalEyebrow}>Independent work</span>
+          <h3 className={styles.personalTitle}>От идеи до реализации</h3>
           <p>
-            Свой продукт, на котором можно показать решения целиком: от идеи и архитектуры до интерфейса и ограничений внешних API.
+            Здесь показываю то, что делаю вне коммерческой работы: собственные
+            продукты, эксперименты и решения, за которые отвечаю целиком.
           </p>
         </div>
 
