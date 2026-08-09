@@ -15,13 +15,6 @@ const DUCK_MESSAGES = [
   "HTTP 429: too many quacks",
 ] as const;
 
-const CAPABILITIES = [
-  ["01", "React / TypeScript"],
-  ["02", "REST / BFF"],
-  ["03", "WebSocket / real-time"],
-  ["04", "Legacy / releases"],
-] as const;
-
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() => {
     if (typeof window === "undefined") {
@@ -33,11 +26,16 @@ function useMediaQuery(query: string) {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(query);
-    const handleChange = (event: MediaQueryListEvent) => setMatches(event.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
 
     mediaQuery.addEventListener("change", handleChange);
 
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
   }, [query]);
 
   return matches;
@@ -58,7 +56,9 @@ export function HeroSection() {
   const duckMessageIndexRef = useRef(0);
 
   useEffect(() => {
-    const sceneTimerId = window.setTimeout(() => setSceneEnabled(true), 120);
+    const sceneTimerId = window.setTimeout(() => {
+      setSceneEnabled(true);
+    }, 120);
 
     return () => {
       window.clearTimeout(sceneTimerId);
@@ -73,7 +73,9 @@ export function HeroSection() {
     };
   }, []);
 
-  const markInteracted = () => setHasInteracted(true);
+  const markInteracted = () => {
+    setHasInteracted(true);
+  };
 
   const handleDuckInteract = () => {
     markInteracted();
@@ -94,7 +96,9 @@ export function HeroSection() {
     }, 1100);
   };
 
-  const handleDuckReady = () => setDuckReady(true);
+  const handleDuckReady = () => {
+    setDuckReady(true);
+  };
 
   const handleControlsStart = () => {
     markInteracted();
@@ -124,99 +128,86 @@ export function HeroSection() {
 
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title">
-      <div className={styles.heroMain}>
-        <div className={styles.content}>
-          <p className={`${styles.eyebrow} hero-animate`}>
-            <span>portfolio / 2026</span>
-            <span className={styles.available}>frontend</span>
-          </p>
+      <div className={styles.content}>
+        <p className={`${styles.intro} hero-animate`}>
+          <span className={styles.prompt}>$</span>
+          <span>whoami</span>
+          <span className={styles.caret} aria-hidden="true">
+            _
+          </span>
+        </p>
 
+        <div className={styles.hgroup}>
           <h1 id="hero-title" className="hero-animate hero-animate-delay-1">
-            <span>Привет,</span>
-            <span>я Илья.</span>
-            <strong>Frontend-разработчик.</strong>
+            <span className={styles.nameLine}>Привет, я Илья.</span>
+            <span className={styles.highlight}>Frontend-разработчик.</span>
           </h1>
 
-          <div className={`${styles.copyGrid} hero-animate hero-animate-delay-2`}>
-            <p className={styles.tagline}>{siteConfig.tagline}</p>
-            <p className={styles.description}>{siteConfig.description}</p>
-          </div>
+          <p className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
+            {siteConfig.tagline}
+          </p>
 
-          <div className={`${styles.actions} hero-animate hero-animate-delay-3`}>
-            <a href="#projects" className={styles.primaryBtn}>
-              Смотреть работы
-            </a>
-            <a href="#contacts" className={styles.secondaryBtn}>
-              Связаться
-            </a>
-            <a
-              href={siteConfig.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.tertiaryLink}
-            >
-              GitHub ↗
-            </a>
-          </div>
+          <p className={`${styles.description} hero-animate hero-animate-delay-3`}>
+            {siteConfig.description}
+          </p>
         </div>
 
-        <div className={`${styles.visual} hero-animate hero-animate-delay-2`}>
-          <div className={styles.visualLabel} aria-hidden="true">
-            <span>interactive object</span>
-            <span>duck.3d</span>
-          </div>
+        <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
+          <a href="#projects" className={styles.primaryBtn}>
+            Смотреть работы
+          </a>
 
-          <div className={styles.orbit} aria-hidden="true" />
+          <a href="#contacts" className={styles.secondaryBtn}>
+            Связаться
+          </a>
 
-          <div className={styles.canvasWrapper} aria-hidden="true">
-            {sceneEnabled ? (
-              <Suspense fallback={<div className={styles.canvasFallback} />}>
-                <DuckScene
-                  reducedMotion={reducedMotion}
-                  hasFinePointer={hasFinePointer}
-                  autoRotate={autoRotate}
-                  duckReady={duckReady}
-                  onDuckInteract={handleDuckInteract}
-                  onDuckReady={handleDuckReady}
-                  onControlsStart={handleControlsStart}
-                  onControlsEnd={handleControlsEnd}
-                />
-              </Suspense>
-            ) : (
-              <div className={styles.canvasFallback} />
-            )}
-          </div>
-
-          <span className={styles.duckWord} aria-hidden="true">
-            DUCK
-          </span>
-
-          {duckMessage && (
-            <div className={styles.duckBubble} role="status" aria-live="polite">
-              {duckMessage}
-            </div>
-          )}
-
-          <div
-            className={`${styles.interactionHint} ${
-              duckReady ? styles.interactionHintReady : ""
-            } ${hasInteracted ? styles.interactionHintHidden : ""}`}
-            aria-hidden="true"
+          <a
+            href={siteConfig.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.tertiaryLink}
           >
-            <span className={styles.interactionDot} />
-            покрути • кликни
-          </div>
+            GitHub ↗
+          </a>
         </div>
       </div>
 
-      <ul className={`${styles.capabilities} hero-animate hero-animate-delay-4`}>
-        {CAPABILITIES.map(([index, label]) => (
-          <li key={label}>
-            <span>{index}</span>
-            <strong>{label}</strong>
-          </li>
-        ))}
-      </ul>
+      <div className={`${styles.visual} hero-animate hero-animate-delay-3`}>
+        <div className={styles.canvasWrapper} aria-hidden="true">
+          {sceneEnabled ? (
+            <Suspense fallback={<div className={styles.canvasFallback} />}>
+              <DuckScene
+                reducedMotion={reducedMotion}
+                hasFinePointer={hasFinePointer}
+                autoRotate={autoRotate}
+                duckReady={duckReady}
+                onDuckInteract={handleDuckInteract}
+                onDuckReady={handleDuckReady}
+                onControlsStart={handleControlsStart}
+                onControlsEnd={handleControlsEnd}
+              />
+            </Suspense>
+          ) : (
+            <div className={styles.canvasFallback} />
+          )}
+        </div>
+
+        {duckMessage && (
+          <div className={styles.duckBubble} role="status" aria-live="polite">
+            {duckMessage}
+          </div>
+        )}
+
+        <div
+          className={`${styles.interactionHint} ${
+            duckReady ? styles.interactionHintReady : ""
+          } ${hasInteracted ? styles.interactionHintHidden : ""}`}
+          aria-hidden="true"
+        >
+          <span className={styles.interactionDot} />
+          покрути • кликни
+        </div>
+      </div>
     </section>
   );
 }
