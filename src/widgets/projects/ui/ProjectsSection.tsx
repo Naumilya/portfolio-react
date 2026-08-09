@@ -1,116 +1,43 @@
-import { useEffect, useRef, useState } from "react";
-
 import { personalProjects, projects } from "@/shared/config/projects";
+import { useReveal } from "@/shared/lib/useReveal";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./ProjectsSection.module.css";
 
-interface ShowcaseItem {
-  id: string;
-  title: string;
-  type: string;
-  category: string;
-  description: string;
-  primaryLabel: string;
-  primaryText: string;
-  secondaryLabel: string;
-  secondaryText: string;
-  tags: string[];
-  notes: string[];
-  href?: string;
-  hrefLabel?: string;
-  poster: "systems" | "route" | "radar";
-}
-
-const showcaseItems: ShowcaseItem[] = [
-  ...projects.map((project, index) => ({
-    id: project.id,
-    title: project.title,
-    type: project.type,
-    category: `0${index + 1} / commercial`,
-    description: project.description,
-    primaryLabel: "Задача",
-    primaryText: project.task,
-    secondaryLabel: "Мой вклад",
-    secondaryText: project.contribution,
-    tags: project.stack,
-    notes: project.stack.slice(0, 3),
-    href: project.liveUrl,
-    hrefLabel: "Открыть проект ↗",
-    poster: project.id === "lemanapro" ? ("systems" as const) : ("route" as const),
-  })),
-  ...personalProjects.map((project) => ({
-    id: project.id,
-    title: project.title,
-    type: "Telegram Mini App",
-    category: "03 / personal lab",
-    description: project.description,
-    primaryLabel: "Зачем",
-    primaryText: project.problem,
-    secondaryLabel: "Архитектура",
-    secondaryText: project.architecture,
-    tags: project.working,
-    notes: project.keyDecisions,
-    href: project.githubUrl,
-    hrefLabel: "Смотреть код ↗",
-    poster: "radar" as const,
-  })),
-];
-
-function clamp01(value: number) {
-  return Math.min(1, Math.max(0, value));
-}
-
-function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-
-    return window.matchMedia(query).matches;
-  });
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(query);
-    const handleChange = (event: MediaQueryListEvent) => setMatches(event.matches);
-
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [query]);
-
-  return matches;
-}
-
-function ProjectPoster({ item, index }: { item: ShowcaseItem; index: number }) {
-  if (item.poster === "systems") {
+function CommercialArtwork({ id, index }: { id: string; index: number }) {
+  if (id === "lemanapro") {
     return (
-      <div className={`${styles.poster} ${styles.systemsPoster}`} aria-hidden="true">
-        <div className={styles.posterChrome}>
-          <span>system / map</span>
+      <div className={`${styles.artwork} ${styles.systemArtwork}`} aria-hidden="true">
+        <div className={styles.artworkTopline}>
+          <span>product system</span>
           <span>0{index + 1}</span>
         </div>
 
-        <div className={styles.systemWindow}>
-          <div className={styles.systemSidebar}>
-            <span />
-            <span />
-            <span />
-            <span />
+        <div className={styles.browserFrame}>
+          <div className={styles.browserBar}>
+            <i />
+            <i />
+            <i />
+            <span>internal.product</span>
           </div>
-          <div className={styles.systemMain}>
-            <div className={styles.systemToolbar}>
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className={styles.systemCards}>
+          <div className={styles.browserBody}>
+            <aside>
               <span />
               <span />
               <span />
               <span />
-              <span />
-              <span />
+            </aside>
+            <div className={styles.browserContent}>
+              <div className={styles.browserToolbar}>
+                <span />
+                <span />
+              </div>
+              <div className={styles.browserCards}>
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
             </div>
           </div>
         </div>
@@ -126,39 +53,38 @@ function ProjectPoster({ item, index }: { item: ShowcaseItem; index: number }) {
     );
   }
 
-  if (item.poster === "route") {
-    return (
-      <div className={`${styles.poster} ${styles.routePoster}`} aria-hidden="true">
-        <div className={styles.posterChrome}>
-          <span>concept / route</span>
-          <span>0{index + 1}</span>
-        </div>
-
-        <div className={styles.routeCanvas}>
-          <div className={styles.routeLine} />
-          <span className={`${styles.routeStop} ${styles.stopOne}`}>Экскурсии</span>
-          <span className={`${styles.routeStop} ${styles.stopTwo}`}>Формы</span>
-          <span className={`${styles.routeStop} ${styles.stopThree}`}>API</span>
-          <span className={`${styles.routeStop} ${styles.stopFour}`}>Запуск</span>
-
-          <div className={styles.routeTicket}>
-            <small>commercial web</small>
-            <strong>Москва</strong>
-            <span>React / TypeScript</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`${styles.poster} ${styles.radarPoster}`} aria-hidden="true">
-      <div className={styles.posterChrome}>
-        <span>product / prototype</span>
+    <div className={`${styles.artwork} ${styles.routeArtwork}`} aria-hidden="true">
+      <div className={styles.artworkTopline}>
+        <span>commercial web</span>
         <span>0{index + 1}</span>
       </div>
 
-      <div className={styles.radarCanvas}>
+      <div className={styles.routeMap}>
+        <span className={`${styles.routeNode} ${styles.routeNodeOne}`}>01</span>
+        <span className={`${styles.routeNode} ${styles.routeNodeTwo}`}>02</span>
+        <span className={`${styles.routeNode} ${styles.routeNodeThree}`}>03</span>
+        <div className={styles.routePath} />
+
+        <div className={styles.ticket}>
+          <small>route / interface</small>
+          <strong>Москва</strong>
+          <span>React · TypeScript · API</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function JobRadarArtwork() {
+  return (
+    <div className={`${styles.artwork} ${styles.radarArtwork}`} aria-hidden="true">
+      <div className={styles.artworkTopline}>
+        <span>personal product</span>
+        <span>03</span>
+      </div>
+
+      <div className={styles.radarField}>
         <div className={styles.radarRings}>
           <span />
           <span />
@@ -167,16 +93,16 @@ function ProjectPoster({ item, index }: { item: ShowcaseItem; index: number }) {
         <div className={styles.radarSweep} />
 
         <div className={styles.vacancyCard}>
-          <small>frontend / remote</small>
+          <small>remote · frontend</small>
           <strong>React Developer</strong>
           <div>
-            <span>TypeScript</span>
             <span>React</span>
+            <span>TypeScript</span>
             <span>API</span>
           </div>
         </div>
 
-        <div className={styles.radarPipeline}>
+        <div className={styles.radarFlow}>
           <span>BOT</span>
           <i>→</i>
           <span>FILTER</span>
@@ -189,179 +115,131 @@ function ProjectPoster({ item, index }: { item: ShowcaseItem; index: number }) {
 }
 
 export function ProjectsSection() {
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const compactLayout = useMediaQuery("(max-width: 900px)");
-  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-
-  useEffect(() => {
-    const scene = sceneRef.current;
-
-    if (!scene || compactLayout || reducedMotion) {
-      return;
-    }
-
-    let frameId = 0;
-
-    const updateScene = () => {
-      frameId = 0;
-
-      const rect = scene.getBoundingClientRect();
-      const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
-      const progress = clamp01(-rect.top / travel);
-      const nextIndex = Math.min(
-        showcaseItems.length - 1,
-        Math.floor(progress * showcaseItems.length),
-      );
-
-      scene.style.setProperty("--showcase-progress", progress.toFixed(4));
-      setActiveIndex((current) => (current === nextIndex ? current : nextIndex));
-    };
-
-    const requestUpdate = () => {
-      if (frameId !== 0) {
-        return;
-      }
-
-      frameId = requestAnimationFrame(updateScene);
-    };
-
-    updateScene();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate);
-
-    return () => {
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-
-      if (frameId !== 0) {
-        cancelAnimationFrame(frameId);
-      }
-    };
-  }, [compactLayout, reducedMotion]);
-
-  const scrollToProject = (index: number) => {
-    const scene = sceneRef.current;
-
-    if (!scene || compactLayout) {
-      return;
-    }
-
-    const sceneTop = window.scrollY + scene.getBoundingClientRect().top;
-    const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
-    const progress =
-      showcaseItems.length === 1 ? 0 : index / (showcaseItems.length - 1);
-
-    window.scrollTo({
-      top: sceneTop + travel * progress,
-      behavior: reducedMotion ? "auto" : "smooth",
-    });
-  };
+  const sectionRef = useReveal<HTMLElement>();
 
   return (
-    <section id="projects" className={styles.projects}>
+    <section
+      id="projects"
+      ref={sectionRef}
+      className={`${styles.projects} reveal`}
+    >
       <SectionHeading
         index="03"
         eyebrow="Selected work"
         title="Работы"
-        description="Не галерея скриншотов, а три разных типа задач: продуктовая разработка, коммерческий запуск и собственный эксперимент."
+        description="Коммерческие продукты и собственная разработка — без выдуманных метрик, только задача, вклад и технический контекст."
       />
 
-      <div ref={sceneRef} className={styles.showcaseScene}>
-        <div className={styles.showcaseStage}>
-          <aside className={styles.selector} aria-label="Выбрать проект">
-            <div className={styles.selectorIntro}>
-              <span>selected / 03</span>
-              <p>Скролл переключает проекты, сцена остаётся на месте.</p>
-            </div>
+      <div className={styles.caseList}>
+        {projects.map((project, index) => (
+          <article key={project.id} className={styles.caseStudy}>
+            <div className={styles.caseCopy}>
+              <div className={styles.caseTopline}>
+                <span>0{index + 1} / commercial</span>
+                <span>{project.type}</span>
+              </div>
 
-            <ol className={styles.selectorList}>
-              {showcaseItems.map((item, index) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    className={`${styles.selectorButton} ${
-                      index === activeIndex ? styles.selectorButtonActive : ""
-                    }`}
-                    onClick={() => scrollToProject(index)}
-                    aria-pressed={index === activeIndex}
+              <div className={styles.caseHeading}>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </div>
+
+              <dl className={styles.caseFacts}>
+                <div>
+                  <dt>Задача</dt>
+                  <dd>{project.task}</dd>
+                </div>
+                <div>
+                  <dt>Мой вклад</dt>
+                  <dd>{project.contribution}</dd>
+                </div>
+              </dl>
+
+              <div className={styles.caseFooter}>
+                <ul className={styles.stackList} aria-label="Стек проекта">
+                  {project.stack.map((tech) => (
+                    <li key={tech}>{tech}</li>
+                  ))}
+                </ul>
+
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.projectLink}
+                    aria-label={`Открыть сайт проекта ${project.title}`}
                   >
-                    <span>0{index + 1}</span>
-                    <strong>{item.title}</strong>
-                  </button>
-                </li>
-              ))}
-            </ol>
-
-            <div className={styles.sceneProgress} aria-hidden="true">
-              <span className={styles.sceneProgressValue} />
+                    Открыть проект ↗
+                  </a>
+                )}
+              </div>
             </div>
-          </aside>
 
-          <div className={styles.panelViewport}>
-            {showcaseItems.map((item, index) => {
-              const active = index === activeIndex;
-
-              return (
-                <article
-                  key={item.id}
-                  className={`${styles.panel} ${active ? styles.panelActive : ""}`}
-                  aria-hidden={!compactLayout && !active}
-                >
-                  <div className={styles.panelCopy}>
-                    <div className={styles.panelTopline}>
-                      <span>{item.category}</span>
-                      <span>{item.type}</span>
-                    </div>
-
-                    <h3 className={styles.projectTitle}>{item.title}</h3>
-                    <p className={styles.projectDescription}>{item.description}</p>
-
-                    <div className={styles.caseGrid}>
-                      <div>
-                        <h4>{item.primaryLabel}</h4>
-                        <p>{item.primaryText}</p>
-                      </div>
-                      <div>
-                        <h4>{item.secondaryLabel}</h4>
-                        <p>{item.secondaryText}</p>
-                      </div>
-                    </div>
-
-                    <ul className={styles.noteList}>
-                      {item.notes.map((note) => (
-                        <li key={note}>{note}</li>
-                      ))}
-                    </ul>
-
-                    <div className={styles.panelFooter}>
-                      <ul className={styles.tagList} aria-label="Технологии и готовые части">
-                        {item.tags.map((tag) => (
-                          <li key={tag}>{tag}</li>
-                        ))}
-                      </ul>
-
-                      {item.href && item.hrefLabel && (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.projectLink}
-                          tabIndex={!compactLayout && !active ? -1 : 0}
-                        >
-                          {item.hrefLabel}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  <ProjectPoster item={item} index={index} />
-                </article>
-              );
-            })}
-          </div>
-        </div>
+            <CommercialArtwork id={project.id} index={index} />
+          </article>
+        ))}
       </div>
+
+      {personalProjects.map((project) => (
+        <article id="own-projects" key={project.id} className={styles.personalCase}>
+          <div className={styles.personalHeader}>
+            <div>
+              <span className={styles.personalEyebrow}>03 / personal lab</span>
+              <h3>{project.title}</h3>
+            </div>
+            <span className={styles.statusBadge}>
+              {project.status === "in-progress" ? "В разработке" : "Запланирован"}
+            </span>
+          </div>
+
+          <div className={styles.personalLayout}>
+            <div className={styles.personalCopy}>
+              <p className={styles.personalLead}>{project.description}</p>
+
+              <dl className={styles.personalFacts}>
+                <div>
+                  <dt>Зачем</dt>
+                  <dd>{project.problem}</dd>
+                </div>
+                <div>
+                  <dt>Архитектура</dt>
+                  <dd>{project.architecture}</dd>
+                </div>
+              </dl>
+
+              <div className={styles.decisionBlock}>
+                <span>Ключевые решения</span>
+                <ul>
+                  {project.keyDecisions.map((decision) => (
+                    <li key={decision}>{decision}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <ul className={styles.stackList} aria-label="Что уже работает">
+                {project.working.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.projectLink}
+                  aria-label={`Открыть GitHub проекта ${project.title}`}
+                >
+                  Смотреть код на GitHub ↗
+                </a>
+              )}
+            </div>
+
+            <JobRadarArtwork />
+          </div>
+        </article>
+      ))}
     </section>
   );
 }
