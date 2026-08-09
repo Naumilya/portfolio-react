@@ -17,7 +17,7 @@ export function ProjectsSection() {
         index="03"
         eyebrow="Selected work"
         title="Работы"
-        description="Коммерческие продукты и собственная разработка — с фокусом на задачу, мой вклад и технический контекст."
+        description="Коммерческие кейсы и собственный продукт: контекст, мой вклад и технические решения без выдуманных метрик."
       />
 
       <div className={styles.projectList}>
@@ -36,7 +36,7 @@ export function ProjectsSection() {
                   className={styles.link}
                   aria-label={`Открыть сайт проекта ${project.title}`}
                 >
-                  Live ↗
+                  Открыть сайт ↗
                 </a>
               )}
             </div>
@@ -51,13 +51,13 @@ export function ProjectsSection() {
 
             <div className={styles.caseGrid}>
               <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Задача</h4>
-                <p>{project.task}</p>
+                <h4 className={styles.caseTitle}>Мой вклад</h4>
+                <p>{project.contribution}</p>
               </div>
 
               <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Мой вклад</h4>
-                <p>{project.contribution}</p>
+                <h4 className={styles.caseTitle}>Задача</h4>
+                <p>{project.task}</p>
               </div>
             </div>
 
@@ -75,9 +75,9 @@ export function ProjectsSection() {
       <div id="own-projects" className={styles.personalSection}>
         <div className={styles.personalIntro}>
           <span className={styles.personalEyebrow}>Lab / personal</span>
-          <h3 className={styles.personalTitle}>Свои проекты</h3>
+          <h3 className={styles.personalTitle}>JobRadar</h3>
           <p>
-            Здесь можно экспериментировать с продуктом и архитектурой без ограничений коммерческого проекта.
+            Свой продукт, на котором можно показать решения целиком: от идеи и архитектуры до интерфейса и ограничений внешних API.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export function ProjectsSection() {
 
             <div className={styles.personalGrid}>
               <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Зачем</h5>
+                <h5 className={styles.caseTitle}>Проблема</h5>
                 <p>{project.problem}</p>
               </div>
 
@@ -107,7 +107,7 @@ export function ProjectsSection() {
               </div>
 
               <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Ключевые решения</h5>
+                <h5 className={styles.caseTitle}>Решения</h5>
                 <ul className={styles.decisionList}>
                   {project.keyDecisions.map((decision) => (
                     <li key={decision}>{decision}</li>
