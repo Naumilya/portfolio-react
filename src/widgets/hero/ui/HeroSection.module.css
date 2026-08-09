@@ -2,6 +2,7 @@
   --hero-progress: 0;
   --hero-intro-opacity: 1;
   --hero-story-opacity: 0;
+  --hero-story-shift: 28px;
   --hero-copy-shift: 0px;
   --hero-duck-shift: 0vw;
   --hero-duck-scale: 1;
@@ -63,7 +64,7 @@
   line-height: 0.76;
   letter-spacing: -0.09em;
   -webkit-text-stroke: 1px rgb(255 255 255 / 8%);
-  opacity: calc(var(--hero-story-opacity) * 0.9);
+  opacity: var(--hero-story-opacity);
   transform: translateX(calc(-50% + var(--hero-ghost-shift)));
   white-space: nowrap;
   pointer-events: none;
@@ -348,7 +349,7 @@
   width: min(41vw, 620px);
   gap: var(--space-5);
   opacity: var(--hero-story-opacity);
-  transform: translateY(calc(-50% + 28px - (var(--hero-story-opacity) * 28px)));
+  transform: translateY(calc(-50% + var(--hero-story-shift)));
   pointer-events: none;
   will-change: opacity, transform;
 }
