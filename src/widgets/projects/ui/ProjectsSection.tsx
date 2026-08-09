@@ -1,145 +1,366 @@
+import { useEffect, useRef, useState } from "react";
+
 import { personalProjects, projects } from "@/shared/config/projects";
-import { useReveal } from "@/shared/lib/useReveal";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./ProjectsSection.module.css";
 
-export function ProjectsSection() {
-  const sectionRef = useReveal<HTMLElement>();
+interface ShowcaseItem {
+  id: string;
+  title: string;
+  type: string;
+  category: string;
+  description: string;
+  primaryLabel: string;
+  primaryText: string;
+  secondaryLabel: string;
+  secondaryText: string;
+  tags: string[];
+  notes: string[];
+  href?: string;
+  hrefLabel?: string;
+  poster: "systems" | "route" | "radar";
+}
+
+const showcaseItems: ShowcaseItem[] = [
+  ...projects.map((project, index) => ({
+    id: project.id,
+    title: project.title,
+    type: project.type,
+    category: `0${index + 1} / commercial`,
+    description: project.description,
+    primaryLabel: "Задача",
+    primaryText: project.task,
+    secondaryLabel: "Мой вклад",
+    secondaryText: project.contribution,
+    tags: project.stack,
+    notes: project.stack.slice(0, 3),
+    href: project.liveUrl,
+    hrefLabel: "Открыть проект ↗",
+    poster: project.id === "lemanapro" ? ("systems" as const) : ("route" as const),
+  })),
+  ...personalProjects.map((project) => ({
+    id: project.id,
+    title: project.title,
+    type: "Telegram Mini App",
+    category: "03 / personal lab",
+    description: project.description,
+    primaryLabel: "Зачем",
+    primaryText: project.problem,
+    secondaryLabel: "Архитектура",
+    secondaryText: project.architecture,
+    tags: project.working,
+    notes: project.keyDecisions,
+    href: project.githubUrl,
+    hrefLabel: "Смотреть код ↗",
+    poster: "radar" as const,
+  })),
+];
+
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.matchMedia(query).matches;
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+    const handleChange = (event: MediaQueryListEvent) => setMatches(event.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [query]);
+
+  return matches;
+}
+
+function ProjectPoster({ item, index }: { item: ShowcaseItem; index: number }) {
+  if (item.poster === "systems") {
+    return (
+      <div className={`${styles.poster} ${styles.systemsPoster}`} aria-hidden="true">
+        <div className={styles.posterChrome}>
+          <span>system / map</span>
+          <span>0{index + 1}</span>
+        </div>
+
+        <div className={styles.systemWindow}>
+          <div className={styles.systemSidebar}>
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className={styles.systemMain}>
+            <div className={styles.systemToolbar}>
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className={styles.systemCards}>
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.systemFlow}>
+          <span>MFE</span>
+          <i>→</i>
+          <span>BFF</span>
+          <i>→</i>
+          <span>REST / WS</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (item.poster === "route") {
+    return (
+      <div className={`${styles.poster} ${styles.routePoster}`} aria-hidden="true">
+        <div className={styles.posterChrome}>
+          <span>concept / route</span>
+          <span>0{index + 1}</span>
+        </div>
+
+        <div className={styles.routeCanvas}>
+          <div className={styles.routeLine} />
+          <span className={`${styles.routeStop} ${styles.stopOne}`}>Экскурсии</span>
+          <span className={`${styles.routeStop} ${styles.stopTwo}`}>Формы</span>
+          <span className={`${styles.routeStop} ${styles.stopThree}`}>API</span>
+          <span className={`${styles.routeStop} ${styles.stopFour}`}>Запуск</span>
+
+          <div className={styles.routeTicket}>
+            <small>commercial web</small>
+            <strong>Москва</strong>
+            <span>React / TypeScript</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className={`${styles.projects} reveal`}
-    >
+    <div className={`${styles.poster} ${styles.radarPoster}`} aria-hidden="true">
+      <div className={styles.posterChrome}>
+        <span>product / prototype</span>
+        <span>0{index + 1}</span>
+      </div>
+
+      <div className={styles.radarCanvas}>
+        <div className={styles.radarRings}>
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className={styles.radarSweep} />
+
+        <div className={styles.vacancyCard}>
+          <small>frontend / remote</small>
+          <strong>React Developer</strong>
+          <div>
+            <span>TypeScript</span>
+            <span>React</span>
+            <span>API</span>
+          </div>
+        </div>
+
+        <div className={styles.radarPipeline}>
+          <span>BOT</span>
+          <i>→</i>
+          <span>FILTER</span>
+          <i>→</i>
+          <span>MINI APP</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ProjectsSection() {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const compactLayout = useMediaQuery("(max-width: 900px)");
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+
+  useEffect(() => {
+    const scene = sceneRef.current;
+
+    if (!scene || compactLayout || reducedMotion) {
+      return;
+    }
+
+    let frameId = 0;
+
+    const updateScene = () => {
+      frameId = 0;
+
+      const rect = scene.getBoundingClientRect();
+      const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
+      const progress = clamp01(-rect.top / travel);
+      const nextIndex = Math.min(
+        showcaseItems.length - 1,
+        Math.floor(progress * showcaseItems.length),
+      );
+
+      scene.style.setProperty("--showcase-progress", progress.toFixed(4));
+      setActiveIndex((current) => (current === nextIndex ? current : nextIndex));
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== 0) {
+        return;
+      }
+
+      frameId = requestAnimationFrame(updateScene);
+    };
+
+    updateScene();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+
+      if (frameId !== 0) {
+        cancelAnimationFrame(frameId);
+      }
+    };
+  }, [compactLayout, reducedMotion]);
+
+  const scrollToProject = (index: number) => {
+    const scene = sceneRef.current;
+
+    if (!scene || compactLayout) {
+      return;
+    }
+
+    const sceneTop = window.scrollY + scene.getBoundingClientRect().top;
+    const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
+    const progress =
+      showcaseItems.length === 1 ? 0 : index / (showcaseItems.length - 1);
+
+    window.scrollTo({
+      top: sceneTop + travel * progress,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  };
+
+  return (
+    <section id="projects" className={styles.projects}>
       <SectionHeading
         index="03"
         eyebrow="Selected work"
         title="Работы"
-        description="Коммерческие продукты и собственная разработка — с фокусом на задачу, мой вклад и технический контекст."
+        description="Не галерея скриншотов, а три разных типа задач: продуктовая разработка, коммерческий запуск и собственный эксперимент."
       />
 
-      <div className={styles.projectList}>
-        {projects.map((project, index) => (
-          <article key={project.id} className={styles.card}>
-            <div className={styles.cardTopline}>
-              <span className={styles.projectIndex} aria-hidden="true">
-                {String(index + 1).padStart(2, "0")} / commercial
-              </span>
-
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                  aria-label={`Открыть сайт проекта ${project.title}`}
-                >
-                  Live ↗
-                </a>
-              )}
+      <div ref={sceneRef} className={styles.showcaseScene}>
+        <div className={styles.showcaseStage}>
+          <aside className={styles.selector} aria-label="Выбрать проект">
+            <div className={styles.selectorIntro}>
+              <span>selected / 03</span>
+              <p>Скролл переключает проекты, сцена остаётся на месте.</p>
             </div>
 
-            <div className={styles.cardHeader}>
-              <div>
-                <h3 className={styles.cardTitle}>{project.title}</h3>
-                <p className={styles.cardType}>{project.type}</p>
-              </div>
-              <p className={styles.description}>{project.description}</p>
-            </div>
-
-            <div className={styles.caseGrid}>
-              <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Задача</h4>
-                <p>{project.task}</p>
-              </div>
-
-              <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Мой вклад</h4>
-                <p>{project.contribution}</p>
-              </div>
-            </div>
-
-            <ul className={styles.stackList} aria-label="Стек проекта">
-              {project.stack.map((tech) => (
-                <li key={tech} className={styles.tech}>
-                  {tech}
+            <ol className={styles.selectorList}>
+              {showcaseItems.map((item, index) => (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    className={`${styles.selectorButton} ${
+                      index === activeIndex ? styles.selectorButtonActive : ""
+                    }`}
+                    onClick={() => scrollToProject(index)}
+                    aria-pressed={index === activeIndex}
+                  >
+                    <span>0{index + 1}</span>
+                    <strong>{item.title}</strong>
+                  </button>
                 </li>
               ))}
-            </ul>
-          </article>
-        ))}
-      </div>
+            </ol>
 
-      <div id="own-projects" className={styles.personalSection}>
-        <div className={styles.personalIntro}>
-          <span className={styles.personalEyebrow}>Lab / personal</span>
-          <h3 className={styles.personalTitle}>Свои проекты</h3>
-          <p>
-            Здесь можно экспериментировать с продуктом и архитектурой без ограничений коммерческого проекта.
-          </p>
+            <div className={styles.sceneProgress} aria-hidden="true">
+              <span className={styles.sceneProgressValue} />
+            </div>
+          </aside>
+
+          <div className={styles.panelViewport}>
+            {showcaseItems.map((item, index) => {
+              const active = index === activeIndex;
+
+              return (
+                <article
+                  key={item.id}
+                  className={`${styles.panel} ${active ? styles.panelActive : ""}`}
+                  aria-hidden={!compactLayout && !active}
+                >
+                  <div className={styles.panelCopy}>
+                    <div className={styles.panelTopline}>
+                      <span>{item.category}</span>
+                      <span>{item.type}</span>
+                    </div>
+
+                    <h3 className={styles.projectTitle}>{item.title}</h3>
+                    <p className={styles.projectDescription}>{item.description}</p>
+
+                    <div className={styles.caseGrid}>
+                      <div>
+                        <h4>{item.primaryLabel}</h4>
+                        <p>{item.primaryText}</p>
+                      </div>
+                      <div>
+                        <h4>{item.secondaryLabel}</h4>
+                        <p>{item.secondaryText}</p>
+                      </div>
+                    </div>
+
+                    <ul className={styles.noteList}>
+                      {item.notes.map((note) => (
+                        <li key={note}>{note}</li>
+                      ))}
+                    </ul>
+
+                    <div className={styles.panelFooter}>
+                      <ul className={styles.tagList} aria-label="Технологии и готовые части">
+                        {item.tags.map((tag) => (
+                          <li key={tag}>{tag}</li>
+                        ))}
+                      </ul>
+
+                      {item.href && item.hrefLabel && (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.projectLink}
+                          tabIndex={!compactLayout && !active ? -1 : 0}
+                        >
+                          {item.hrefLabel}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <ProjectPoster item={item} index={index} />
+                </article>
+              );
+            })}
+          </div>
         </div>
-
-        {personalProjects.map((project) => (
-          <article key={project.id} className={styles.personalCard}>
-            <div className={styles.personalHeader}>
-              <div>
-                <span className={styles.personalKicker}>Telegram Mini App</span>
-                <h4 className={styles.personalProjectTitle}>{project.title}</h4>
-              </div>
-              <span className={styles.statusBadge}>
-                {project.status === "in-progress" ? "В разработке" : "Запланирован"}
-              </span>
-            </div>
-
-            <p className={styles.personalDescription}>{project.description}</p>
-
-            <div className={styles.personalGrid}>
-              <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Зачем</h5>
-                <p>{project.problem}</p>
-              </div>
-
-              <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Архитектура</h5>
-                <p>{project.architecture}</p>
-              </div>
-
-              <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Ключевые решения</h5>
-                <ul className={styles.decisionList}>
-                  {project.keyDecisions.map((decision) => (
-                    <li key={decision}>{decision}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className={styles.workingBlock}>
-              <h5 className={styles.caseTitle}>Уже работает</h5>
-              <ul className={styles.stackList}>
-                {project.working.map((item) => (
-                  <li key={item} className={styles.tech}>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.projectAction}
-                aria-label={`Открыть GitHub проекта ${project.title}`}
-              >
-                Смотреть код на GitHub ↗
-              </a>
-            )}
-          </article>
-        ))}
       </div>
     </section>
   );
