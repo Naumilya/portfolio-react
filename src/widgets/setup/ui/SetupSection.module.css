@@ -1,61 +1,89 @@
 .setup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-}
-
-.title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
+  gap: clamp(var(--space-8), 5vw, var(--space-16));
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-6);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-left: 72px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .card {
+  min-width: 0;
   padding: var(--space-6);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  transition:
-    border-color var(--transition-base),
-    transform var(--transition-base);
+  border-right: 1px solid var(--color-border);
 }
 
-.card:hover {
-  border-color: var(--color-border-hover);
-  transform: translateY(-2px);
+.card:last-child {
+  border-right: 0;
 }
 
 .cardTitle {
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-5);
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
   font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.03em;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .item {
   position: relative;
-  padding-left: var(--space-5);
+  padding-left: var(--space-4);
   color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
 }
 
 .item::before {
-  content: "";
+  content: "·";
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent);
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card:nth-child(2) {
+    border-right: 0;
+  }
+
+  .card:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+@media (max-width: 900px) {
+  .grid {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .card:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .card:last-child {
+    border-bottom: 0;
+  }
 }
