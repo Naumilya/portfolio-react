@@ -193,9 +193,9 @@ export function HeroSection() {
         </div>
 
         {duckMessage && (
-          <output className={styles.duckBubble} aria-live="polite">
+          <div className={styles.duckBubble} role="status" aria-live="polite">
             {duckMessage}
-          </output>
+          </div>
         )}
 
         <div
