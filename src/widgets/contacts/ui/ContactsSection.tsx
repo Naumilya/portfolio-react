@@ -15,7 +15,7 @@ export function ContactsSection() {
     >
       <SectionHeading
         index="06"
-        eyebrow="Contact"
+        eyebrow="Контакты"
         title="Связаться"
         description="Рассматриваю frontend-позиции и продуктовые команды, где важны качество интерфейса и инженерный контекст."
       />
