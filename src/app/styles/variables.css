@@ -22,7 +22,7 @@
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 2rem;
-  --font-size-4xl: clamp(2.5rem, 4.5vw, 4.75rem);
+  --font-size-4xl: clamp(2.25rem, 3.8vw, 3.5rem);
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -30,7 +30,7 @@
   --font-weight-bold: 700;
 
   --line-height-base: 1.65;
-  --line-height-heading: 1.02;
+  --line-height-heading: 1.08;
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -53,10 +53,10 @@
   --space-28: 112px;
   --space-32: 128px;
 
-  --container-width: 1280px;
-  --container-padding: clamp(20px, 4vw, 56px);
+  --container-width: 1200px;
+  --container-padding: clamp(20px, 3vw, 32px);
   --header-height: 56px;
-  --section-spacing: clamp(96px, 10vw, 144px);
+  --section-spacing: clamp(72px, 7vw, 96px);
 
   --transition-fast: 150ms;
   --transition-base: 300ms;
