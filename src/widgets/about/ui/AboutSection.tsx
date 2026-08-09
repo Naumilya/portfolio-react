@@ -1,5 +1,6 @@
 import { skillGroups } from "@/shared/config/skills";
 import { useReveal } from "@/shared/lib/useReveal";
+import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./AboutSection.module.css";
 
@@ -8,7 +9,7 @@ export function AboutSection() {
 
   return (
     <section id="about" ref={sectionRef} className={`${styles.about} reveal`}>
-      <h2 className={styles.title}>Обо мне</h2>
+      <SectionHeading index="01" eyebrow="Профиль" title="Обо мне" />
 
       <div className={styles.grid}>
         <div className={styles.text}>
@@ -20,7 +21,7 @@ export function AboutSection() {
           </p>
         </div>
 
-        <div className={styles.skills}>
+        <div className={styles.skills} aria-label="Технологии и навыки">
           {skillGroups.map((group) => (
             <div key={group.title} className={styles.skillGroup}>
               <h3 className={styles.skillGroupTitle}>{group.title}</h3>
