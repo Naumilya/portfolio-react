@@ -1,74 +1,76 @@
 .footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-6) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-8);
+  align-items: end;
+  padding: var(--space-6) 0 var(--space-8);
   border-top: 1px solid var(--color-border);
-  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
 }
 
 .left {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
   flex-direction: column;
   align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.copy {
+  white-space: nowrap;
+}
+
+.quote {
+  max-width: 74ch;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .right {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
-.link {
+.link,
+.fortuneButton {
   color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: inherit;
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-fast);
 }
 
-.link:hover {
-  color: var(--color-accent);
-}
-
-.divider {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-border);
-}
-
-.fortuneButton {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-family: inherit;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: color var(--transition-fast);
-}
-
+.link:hover,
 .fortuneButton:hover {
   color: var(--color-accent);
 }
 
-.quote {
-  font-family: monospace;
-  font-size: var(--font-size-xs);
-  margin-top: var(--space-1);
-  opacity: 0.8;
+.fortuneButton {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
-@media (max-width: 480px) {
+.divider {
+  width: 3px;
+  height: 3px;
+  background: var(--color-border-hover);
+  border-radius: 50%;
+}
+
+@media (max-width: 720px) {
   .footer {
-    flex-direction: column;
-    gap: var(--space-4);
-    text-align: center;
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 
-  .left {
-    align-items: center;
-    text-align: center;
+  .right {
+    justify-content: flex-start;
   }
 }
