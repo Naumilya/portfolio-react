@@ -1,11 +1,19 @@
-import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import { siteConfig } from "@/shared/config/site";
-import { DuckModel } from "@/shared/ui/DuckModel";
 
 import styles from "./HeroSection.module.css";
+
+const DuckScene = lazy(() =>
+  import("./DuckScene").then((module) => ({ default: module.DuckScene })),
+);
+
+const DUCK_MESSAGES = [
+  "quack()",
+  "sudo quack",
+  "works on my machine",
+  "HTTP 429: too many quacks",
+] as const;
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() => {
@@ -40,19 +48,52 @@ export function HeroSection() {
   const [autoRotate, setAutoRotate] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [duckReady, setDuckReady] = useState(false);
+  const [sceneEnabled, setSceneEnabled] = useState(false);
+  const [duckMessage, setDuckMessage] = useState<string | null>(null);
 
   const autoRotateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const duckMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const duckMessageIndexRef = useRef(0);
 
   useEffect(() => {
+    const sceneTimerId = window.setTimeout(() => {
+      setSceneEnabled(true);
+    }, 120);
+
     return () => {
+      window.clearTimeout(sceneTimerId);
+
       if (autoRotateTimerRef.current !== null) {
         clearTimeout(autoRotateTimerRef.current);
+      }
+
+      if (duckMessageTimerRef.current !== null) {
+        clearTimeout(duckMessageTimerRef.current);
       }
     };
   }, []);
 
   const markInteracted = () => {
     setHasInteracted(true);
+  };
+
+  const handleDuckInteract = () => {
+    markInteracted();
+
+    if (duckMessageTimerRef.current !== null) {
+      clearTimeout(duckMessageTimerRef.current);
+    }
+
+    const message =
+      DUCK_MESSAGES[duckMessageIndexRef.current % DUCK_MESSAGES.length];
+
+    duckMessageIndexRef.current += 1;
+    setDuckMessage(message);
+
+    duckMessageTimerRef.current = setTimeout(() => {
+      setDuckMessage(null);
+      duckMessageTimerRef.current = null;
+    }, 1100);
   };
 
   const handleDuckReady = () => {
@@ -86,26 +127,30 @@ export function HeroSection() {
   };
 
   return (
-    <section id="hero" className={styles.hero}>
+    <section id="hero" className={styles.hero} aria-labelledby="hero-title">
       <div className={styles.content}>
         <p className={`${styles.intro} hero-animate`}>
-          <span className={styles.prompt}>$</span> whoami
+          <span className={styles.prompt}>$</span>
+          <span>whoami</span>
+          <span className={styles.caret} aria-hidden="true">
+            _
+          </span>
         </p>
 
-        <hgroup className={styles.hgroup}>
-          <h1 className="hero-animate hero-animate-delay-1">
-            Привет, я Илья —{" "}
+        <div className={styles.hgroup}>
+          <h1 id="hero-title" className="hero-animate hero-animate-delay-1">
+            <span className={styles.nameLine}>Привет, я Илья.</span>
             <span className={styles.highlight}>Frontend-разработчик.</span>
           </h1>
 
-          <h2 className="hero-animate hero-animate-delay-2">
+          <p className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
             {siteConfig.tagline}
-          </h2>
+          </p>
 
-          <p className="hero-animate hero-animate-delay-3">
+          <p className={`${styles.description} hero-animate hero-animate-delay-3`}>
             {siteConfig.description}
           </p>
-        </hgroup>
+        </div>
 
         <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
           <a href="#projects" className={styles.primaryBtn}>
@@ -122,79 +167,44 @@ export function HeroSection() {
             rel="noopener noreferrer"
             className={styles.tertiaryLink}
           >
-            GitHub →
+            GitHub ↗
           </a>
         </div>
       </div>
 
-      <div
-        className={`${styles.canvasWrapper} hero-animate hero-animate-delay-3`}
-        aria-hidden="true"
-      >
-        <Canvas
-          camera={{
-            position: [0, 0.05, 7],
-            fov: 38,
-            near: 0.1,
-            far: 50,
-          }}
-          dpr={[1, 1.75]}
-          shadows
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: "high-performance",
-          }}
-        >
-          <ambientLight intensity={1.1} />
-
-          <directionalLight
-            castShadow
-            position={[4, 6, 5]}
-            intensity={2}
-            shadow-mapSize={[1024, 1024]}
-            shadow-bias={-0.0005}
-          />
-
-          <directionalLight position={[-4, 2, 3]} intensity={0.65} />
-
-          <pointLight position={[2, 3, -4]} intensity={0.7} />
-
-          <Suspense fallback={null}>
-            <DuckModel
-              position={[0, 0.05, 0]}
-              scale={1.4}
-              reducedMotion={reducedMotion}
-              onInteract={markInteracted}
-              onReady={handleDuckReady}
-            />
-          </Suspense>
-
-          {hasFinePointer && (
-            <OrbitControls
-              makeDefault
-              enablePan={false}
-              enableZoom={false}
-              enableDamping
-              dampingFactor={0.07}
-              rotateSpeed={0.6}
-              target={[0, 0, 0]}
-              minPolarAngle={Math.PI * 0.36}
-              maxPolarAngle={Math.PI * 0.64}
-              autoRotate={!reducedMotion && duckReady && autoRotate}
-              autoRotateSpeed={0.32}
-              onStart={handleControlsStart}
-              onEnd={handleControlsEnd}
-            />
+      <div className={`${styles.visual} hero-animate hero-animate-delay-3`}>
+        <div className={styles.canvasWrapper} aria-hidden="true">
+          {sceneEnabled ? (
+            <Suspense fallback={<div className={styles.canvasFallback} />}>
+              <DuckScene
+                reducedMotion={reducedMotion}
+                hasFinePointer={hasFinePointer}
+                autoRotate={autoRotate}
+                duckReady={duckReady}
+                onDuckInteract={handleDuckInteract}
+                onDuckReady={handleDuckReady}
+                onControlsStart={handleControlsStart}
+                onControlsEnd={handleControlsEnd}
+              />
+            </Suspense>
+          ) : (
+            <div className={styles.canvasFallback} />
           )}
-        </Canvas>
+        </div>
+
+        {duckMessage && (
+          <output className={styles.duckBubble} aria-live="polite">
+            {duckMessage}
+          </output>
+        )}
 
         <div
           className={`${styles.interactionHint} ${
             duckReady ? styles.interactionHintReady : ""
           } ${hasInteracted ? styles.interactionHintHidden : ""}`}
+          aria-hidden="true"
         >
-          <span className={styles.interactionDot} aria-hidden="true" />
+          <span className={styles.interactionDot} />
           покрути • кликни
         </div>
       </div>
