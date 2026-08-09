@@ -4,21 +4,6 @@ import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./AboutSection.module.css";
 
-const VALUE_POINTS = [
-  {
-    title: "Продукт",
-    text: "Формы, карточки, поиск, фильтрация, условное отображение и интерфейсы с большим количеством данных.",
-  },
-  {
-    title: "Интеграции",
-    text: "REST API, BFF, WebSocket, состояние приложения и клиентская логика вокруг данных.",
-  },
-  {
-    title: "Инженерия",
-    text: "Legacy-код, тестирование, Storybook, code review и участие в релизном цикле.",
-  },
-] as const;
-
 export function AboutSection() {
   const sectionRef = useReveal<HTMLElement>();
 
@@ -27,28 +12,23 @@ export function AboutSection() {
       <SectionHeading
         index="01"
         eyebrow="Профиль"
-        title="Обо мне"
-        description="Не только стек: как я работаю внутри существующего продукта и команды."
+        title="Как работаю"
+        description="Коротко о подходе к продуктовой разработке и технологиях, с которыми работаю."
       />
 
       <div className={styles.grid}>
         <div className={styles.profile}>
           <p className={styles.lead}>
-            Основной профиль — React и TypeScript в коммерческих продуктах, где нужно не просто собрать экран, а встроиться в API, состояние, архитектуру и процесс релиза.
+            Работаю внутри существующих продуктов: разбираюсь в чужом коде,
+            интеграциях и ограничениях системы, а затем довожу интерфейс до
+            предсказуемого состояния для пользователя и команды.
           </p>
 
           <p className={styles.secondaryText}>
-            Работал с B2B/CRM-, HR- и административными системами, real-time данными и существующей кодовой базой. Стараюсь оставлять после себя понятные компоненты и предсказуемое поведение интерфейса.
+            Мне близки задачи, где кроме React-компонента нужно понять данные,
+            API, состояние приложения, real-time поведение и то, как изменение
+            пройдёт через review, тестирование и релиз.
           </p>
-
-          <div className={styles.valueGrid} aria-label="Ключевые компетенции">
-            {VALUE_POINTS.map((point) => (
-              <div key={point.title} className={styles.valueItem}>
-                <h3>{point.title}</h3>
-                <p>{point.text}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className={styles.skills} aria-label="Технологии и навыки">
