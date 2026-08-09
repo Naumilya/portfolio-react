@@ -6,30 +6,29 @@
   align-items: center;
   justify-content: center;
   background: var(--color-background);
-  opacity: 0;
+  opacity: 1;
   pointer-events: none;
-  transition: opacity var(--motion-base) var(--ease-smooth);
+  transition: opacity 220ms var(--ease-smooth);
 }
 
-.intro.visible {
-  opacity: 1;
-  pointer-events: auto;
+.leaving {
+  opacity: 0;
 }
 
 .ascii {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-3xl);
   color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
   line-height: 1;
 }
 
 .line {
   opacity: 0;
-  transform: translateY(8px);
-  animation: line-in 0.4s var(--ease-out) forwards;
+  transform: translateY(5px);
+  animation: line-in 260ms var(--ease-out) forwards;
 }
 
 @keyframes line-in {
