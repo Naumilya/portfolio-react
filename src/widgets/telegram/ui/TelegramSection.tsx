@@ -4,6 +4,10 @@ import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./TelegramSection.module.css";
 
+function getPostExcerpt(text: string) {
+  return text.split("\n").slice(0, 2).join(" ");
+}
+
 export function TelegramSection() {
   const sectionRef = useReveal<HTMLElement>();
   const postsRef = useReveal<HTMLDivElement>();
@@ -48,14 +52,14 @@ export function TelegramSection() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.mainPost}
-              aria-label="Открыть пост в Telegram"
+              aria-label="Открыть последний пост в Telegram"
             >
               <div className={styles.postHeader}>
                 <span className={styles.postLabel}>Последний пост</span>
                 <span className={styles.postDate}>{mainPost.date}</span>
               </div>
-              <p className={styles.postText}>{mainPost.text}</p>
-              <span className={styles.postAction}>Открыть в Telegram ↗</span>
+              <p className={styles.postText}>{getPostExcerpt(mainPost.text)}</p>
+              <span className={styles.postAction}>Открыть пост ↗</span>
             </a>
 
             {secondaryPosts.length > 0 && (
@@ -71,7 +75,7 @@ export function TelegramSection() {
                     style={{ animationDelay: `${0.2 + index * 0.15}s` }}
                   >
                     <span className={styles.postDate}>{post.date}</span>
-                    <p className={styles.postText}>{post.text}</p>
+                    <p className={styles.postText}>{getPostExcerpt(post.text)}</p>
                   </a>
                 ))}
               </div>
