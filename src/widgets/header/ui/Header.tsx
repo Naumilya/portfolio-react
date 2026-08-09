@@ -10,7 +10,7 @@ interface NavigationItem {
 const NAVIGATION_ITEMS: NavigationItem[] = [
   { href: "#about", content: "Обо мне" },
   { href: "#experience", content: "Опыт" },
-  { href: "#projects", content: "Работы" },
+  { href: "#projects", content: "Проекты" },
   { href: "#telegram", content: "Telegram" },
   { href: "#setup", content: "Сетап" },
   { href: "#contacts", content: "Контакты" },
