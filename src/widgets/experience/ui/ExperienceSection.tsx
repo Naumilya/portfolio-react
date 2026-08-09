@@ -37,10 +37,7 @@ export function ExperienceSection() {
 
               <div className={styles.content}>
                 <div className={styles.header}>
-                  <div>
-                    <h3 className={styles.role}>{item.role}</h3>
-                    <div className={styles.company}>{item.company}</div>
-                  </div>
+                  <h3 className={styles.companyTitle}>{item.company}</h3>
                   <p className={styles.context}>{item.context}</p>
                 </div>
 
