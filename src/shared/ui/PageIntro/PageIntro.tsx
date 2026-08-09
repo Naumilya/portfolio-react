@@ -4,45 +4,58 @@ import styles from "./PageIntro.module.css";
 
 const ASCII = ["  __", " /  \\", "|    |", " \\__/"];
 
+function hasSeenIntro() {
+  if (typeof sessionStorage === "undefined") {
+    return false;
+  }
+
+  return sessionStorage.getItem("portfolioIntroSeen") === "1";
+}
+
 export function PageIntro() {
-  const [visible, setVisible] = useState(false);
-  const [done, setDone] = useState(() => {
-    if (typeof sessionStorage === "undefined") return false;
-    return sessionStorage.getItem("portfolioIntroSeen") === "1";
-  });
+  const [done, setDone] = useState(hasSeenIntro);
+  const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    if (done) return;
+    if (done) {
+      return;
+    }
 
-    const t1 = setTimeout(() => setVisible(true), 100);
-    const t2 = setTimeout(() => {
+    const leaveTimerId = window.setTimeout(() => {
+      setLeaving(true);
+    }, 380);
+
+    const doneTimerId = window.setTimeout(() => {
       try {
         sessionStorage.setItem("portfolioIntroSeen", "1");
       } catch {
-        // ignore
+        // sessionStorage can be unavailable in strict privacy modes.
       }
+
       setDone(true);
-    }, 1100);
+    }, 620);
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+      window.clearTimeout(leaveTimerId);
+      window.clearTimeout(doneTimerId);
     };
   }, [done]);
 
-  if (done) return null;
+  if (done) {
+    return null;
+  }
 
   return (
     <div
-      className={`${styles.intro} ${visible ? styles.visible : ""}`}
+      className={`${styles.intro} ${leaving ? styles.leaving : ""}`}
       aria-hidden="true"
     >
       <div className={styles.ascii}>
-        {ASCII.map((line, i) => (
+        {ASCII.map((line, index) => (
           <div
-            key={i}
+            key={line}
             className={styles.line}
-            style={{ animationDelay: `${i * 60}ms` }}
+            style={{ animationDelay: `${index * 45}ms` }}
           >
             {line}
           </div>
