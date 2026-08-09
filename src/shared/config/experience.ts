@@ -1,6 +1,5 @@
 export interface ExperienceItem {
   period: string;
-  role: string;
   company: string;
   context: string;
   responsibilities: string[];
@@ -12,7 +11,6 @@ export interface ExperienceItem {
 export const experience: ExperienceItem[] = [
   {
     period: "2024 — 2025",
-    role: "Frontend-разработчик",
     company: "SkillStaff / проект «Лемана ПРО»",
     context:
       "B2B/CRM-, HR- и административные системы в составе крупного продукта.",
@@ -42,7 +40,6 @@ export const experience: ExperienceItem[] = [
   },
   {
     period: "2023 — 2024",
-    role: "Frontend-разработчик",
     company: "Московское экскурсионное бюро",
     context: "Коммерческий сайт экскурсионного бюро.",
     responsibilities: [
@@ -61,7 +58,6 @@ export const experience: ExperienceItem[] = [
   },
   {
     period: "2021 — 2023",
-    role: "Frontend-разработчик, верстальщик",
     company: "Фриланс",
     context: "Лендинги, сайты-визитки и небольшие интерфейсы.",
     responsibilities: [
