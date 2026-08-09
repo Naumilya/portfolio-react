@@ -188,7 +188,7 @@ p {
 
 @media (max-width: 720px) {
   .main-content {
-    gap: clamp(80px, 20vw, 112px);
+    gap: clamp(64px, 14vw, 80px);
     padding-bottom: var(--space-16);
   }
 }
