@@ -1,53 +1,87 @@
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(240px, 2fr);
+  grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
   align-items: center;
-  gap: var(--space-12);
-  min-height: 440px;
+  gap: clamp(var(--space-8), 6vw, 88px);
+  min-height: min(760px, calc(100svh - var(--header-height)));
+  padding-block: clamp(var(--space-10), 8vw, 104px);
 }
 
 .content {
   display: flex;
   flex-direction: column;
+  max-width: 760px;
 }
 
 .intro {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-
-  font-family: "JetBrains Mono", "Fira Code", monospace;
+  align-self: flex-start;
+  gap: 7px;
+  margin-bottom: var(--space-6);
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
-
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-muted);
 }
 
-.prompt {
+.prompt,
+.caret {
   color: var(--color-accent);
-  font-weight: var(--font-weight-bold);
+}
+
+.caret {
+  display: inline-block;
+  animation: terminal-caret 1s steps(1, end) infinite;
 }
 
 .hgroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-5);
+}
+
+.hgroup h1 {
+  max-width: 10ch;
+  font-size: clamp(3.25rem, 6.2vw, 6.75rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+}
+
+.nameLine,
+.highlight {
+  display: block;
+}
+
+.nameLine {
+  color: var(--color-text-primary);
 }
 
 .highlight {
-  padding: 0 var(--space-1);
+  color: var(--color-accent);
+}
 
-  color: var(--color-background);
-  background-color: var(--color-accent);
+.tagline {
+  max-width: 34ch;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.35;
+  color: var(--color-text-primary);
+}
+
+.description {
+  max-width: 60ch;
+  font-size: var(--font-size-md);
+  line-height: 1.72;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4);
-
-  padding-top: var(--space-10);
+  gap: var(--space-3);
+  padding-top: var(--space-8);
 }
 
 .primaryBtn,
@@ -55,15 +89,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  min-height: 44px;
+  min-height: 46px;
   padding-inline: var(--space-5);
-
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-
   transition:
     transform var(--transition-fast),
     background-color var(--transition-fast),
@@ -79,135 +110,215 @@
 .primaryBtn:hover {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
-  transition: all 300ms ease;
 }
 
 .secondaryBtn {
   color: var(--color-text-secondary);
   border-color: var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
 }
 
 .secondaryBtn:hover {
   color: var(--color-text-primary);
   border-color: var(--color-border-hover);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
-  transition: all 300ms ease;
 }
 
 .tertiaryLink {
+  padding: var(--space-3) var(--space-2);
   color: var(--color-text-muted);
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-
   transition: color var(--transition-fast);
 }
 
 .tertiaryLink:hover {
   color: var(--color-accent);
-  text-decoration: underline;
-  transition: color 300ms ease;
+}
+
+.visual {
+  position: relative;
+  width: 100%;
+  height: clamp(390px, 42vw, 560px);
+  min-width: 0;
+}
+
+.visual::before {
+  content: "";
+  position: absolute;
+  inset: 12% 4%;
+  border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  border-radius: 50%;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.canvasWrapper,
+.canvasFallback {
+  width: 100%;
+  height: 100%;
 }
 
 .canvasWrapper {
   position: relative;
-
-  width: 100%;
-  height: 440px;
-
+  z-index: 1;
   cursor: grab;
   touch-action: pan-y;
-
-  transition: box-shadow 300ms ease;
-  transition: all 300ms ease;
-}
-
-.canvasWrapper:hover {
-  box-shadow: 0 0 20px rgb(0 0 0 / 15%);
-  transition: box-shadow 300ms ease;
 }
 
 .canvasWrapper:active {
   cursor: grabbing;
 }
 
+.canvasFallback {
+  background: radial-gradient(
+    circle at 50% 52%,
+    color-mix(in srgb, var(--color-accent) 5%, transparent),
+    transparent 48%
+  );
+}
+
+.duckBubble {
+  position: absolute;
+  top: 16%;
+  left: 2%;
+  z-index: 3;
+  padding: 8px 11px;
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-background-elevated) 92%, transparent);
+  border: 1px solid var(--color-border-hover);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 22%);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  animation: bubble-in 180ms var(--ease-out) both;
+}
+
+.duckBubble::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 8px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-top: 1px solid var(--color-border-hover);
+  border-right: 1px solid var(--color-border-hover);
+  transform: rotate(45deg);
+}
+
 .interactionHint {
   position: absolute;
   left: 50%;
   bottom: 14px;
-
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 7px;
-
-  padding: 6px 10px;
-
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1;
-
+  padding: 7px 10px;
   color: var(--color-text-muted);
-
-  background: rgb(10 10 10 / 72%);
+  background: rgb(9 9 9 / 78%);
   border: 1px solid var(--color-border);
-  border-radius: 999px;
-
+  border-radius: var(--radius-round);
+  font-family: var(--font-family-mono);
+  font-size: 0.72rem;
+  line-height: 1;
   pointer-events: none;
-
   opacity: 0;
   transform: translate(-50%, 6px);
-
   transition:
-    opacity 300ms ease,
-    transform 300ms ease;
-}
-
-@media (max-width: 768px) {
-  .interactionHint {
-    bottom: 8px;
-  }
+    opacity var(--transition-base),
+    transform var(--transition-base);
 }
 
 .interactionHintReady {
-  opacity: 0.72;
+  opacity: 0.76;
   transform: translate(-50%, 0);
-  transition: all 300ms ease;
 }
 
 .interactionHintHidden {
   opacity: 0;
   transform: translate(-50%, 4px);
-  transition: all 300ms ease;
 }
 
 .interactionDot {
   width: 5px;
   height: 5px;
-
   flex: 0 0 auto;
-
   background: var(--color-accent);
   border-radius: 50%;
-
-  box-shadow: 0 0 8px var(--color-accent);
 }
 
 @media (hover: hover) {
-  .canvasWrapper:hover .interactionHintReady:not(.interactionHintHidden) {
+  .visual:hover .interactionHintReady:not(.interactionHintHidden) {
     opacity: 1;
-    transition: opacity 300ms ease;
   }
 }
 
-@media (max-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
+@keyframes terminal-caret {
+  0%,
+  48% {
+    opacity: 1;
   }
 
-  .canvasWrapper {
-    height: 320px;
+  49%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
+    gap: var(--space-6);
+  }
+
+  .hgroup h1 {
+    font-size: clamp(3rem, 7vw, 5.4rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: var(--space-6);
+    padding-block: var(--space-10) var(--space-4);
+  }
+
+  .hgroup h1 {
+    max-width: 9ch;
+    font-size: clamp(3rem, 14vw, 5.2rem);
+  }
+
+  .tagline {
+    max-width: 30ch;
+  }
+
+  .visual {
+    height: clamp(260px, 72vw, 360px);
+  }
+
+  .visual::before {
+    inset: 10% 10%;
+  }
+
+  .duckBubble {
+    top: 11%;
+    left: 8%;
   }
 }
 
@@ -215,13 +326,14 @@
   .canvasWrapper {
     cursor: default;
   }
-
-  .interactionHint {
-    bottom: 8px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .caret,
+  .duckBubble {
+    animation: none;
+  }
+
   .interactionHint {
     transition: none;
   }
