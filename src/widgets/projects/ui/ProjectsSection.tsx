@@ -15,48 +15,40 @@ export function ProjectsSection() {
     >
       <SectionHeading
         index="03"
-        eyebrow="Personal projects"
+        eyebrow="Личные проекты"
         title="Свои проекты"
-        description="Проекты, где я сам принимаю продуктовые и технические решения — от идеи и архитектуры до интерфейса и кода."
+        description="Собственные продукты, где я отвечаю за решения целиком — от идеи и архитектуры до интерфейса и кода."
       />
 
-      <div id="own-projects" className={styles.personalSection}>
-        <div className={styles.personalIntro}>
-          <span className={styles.personalEyebrow}>Independent work</span>
-          <h3 className={styles.personalTitle}>От идеи до реализации</h3>
-          <p>
-            Здесь показываю то, что делаю вне коммерческой работы: собственные
-            продукты, эксперименты и решения, за которые отвечаю целиком.
-          </p>
-        </div>
-
+      <div id="own-projects" className={styles.projectList}>
         {personalProjects.map((project) => (
-          <article key={project.id} className={styles.personalCard}>
-            <div className={styles.personalHeader}>
+          <article key={project.id} className={styles.projectCard}>
+            <div className={styles.projectHeader}>
               <div>
-                <span className={styles.personalKicker}>Telegram Mini App</span>
-                <h4 className={styles.personalProjectTitle}>{project.title}</h4>
+                <span className={styles.kicker}>Telegram Mini App</span>
+                <h3 className={styles.projectTitle}>{project.title}</h3>
               </div>
+
               <span className={styles.statusBadge}>
                 {project.status === "in-progress" ? "В разработке" : "Запланирован"}
               </span>
             </div>
 
-            <p className={styles.personalDescription}>{project.description}</p>
+            <p className={styles.description}>{project.description}</p>
 
-            <div className={styles.personalGrid}>
+            <div className={styles.caseGrid}>
               <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Проблема</h5>
+                <h4 className={styles.caseTitle}>Проблема</h4>
                 <p>{project.problem}</p>
               </div>
 
               <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Архитектура</h5>
+                <h4 className={styles.caseTitle}>Архитектура</h4>
                 <p>{project.architecture}</p>
               </div>
 
               <div className={styles.caseBlock}>
-                <h5 className={styles.caseTitle}>Решения</h5>
+                <h4 className={styles.caseTitle}>Решения</h4>
                 <ul className={styles.decisionList}>
                   {project.keyDecisions.map((decision) => (
                     <li key={decision}>{decision}</li>
@@ -66,7 +58,7 @@ export function ProjectsSection() {
             </div>
 
             <div className={styles.workingBlock}>
-              <h5 className={styles.caseTitle}>Уже работает</h5>
+              <h4 className={styles.caseTitle}>Уже работает</h4>
               <ul className={styles.stackList}>
                 {project.working.map((item) => (
                   <li key={item} className={styles.tech}>
