@@ -1,4 +1,3 @@
-import { PageIntro } from "@/shared/ui/PageIntro";
 import { AboutSection } from "@/widgets/about";
 import { ContactsSection } from "@/widgets/contacts";
 import { ExperienceSection } from "@/widgets/experience";
@@ -13,7 +12,6 @@ import { TrustSection } from "@/widgets/trust";
 export function HomePage() {
   return (
     <>
-      <PageIntro />
       <Header />
 
       <main className="main-content">
