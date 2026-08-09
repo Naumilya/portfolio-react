@@ -1,62 +1,49 @@
 .contacts {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-  text-align: center;
-  padding: var(--space-10) 0;
+  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  padding-bottom: var(--space-8);
 }
 
-.textContent {
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: clamp(var(--space-8), 8vw, 104px);
+  align-items: start;
+  padding-left: 72px;
+}
+
+.statement {
+  max-width: 18ch;
+  color: var(--color-text-primary);
+  font-size: clamp(2rem, 4.5vw, 4.5rem);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.contactPanel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  max-width: 36em;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding-top: var(--space-2);
 }
 
-.title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-}
-
-.subtitle {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-}
-
-.supporting {
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  width: 100%;
-  max-width: 400px;
-}
-
-.primaryBtn,
-.secondaryBtn {
+.primaryBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: var(--space-3) var(--space-6);
-  border: 1px solid transparent;
+  padding-inline: var(--space-5);
+  color: var(--color-background);
+  background: var(--color-accent);
   border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   transition:
     transform var(--transition-fast),
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.primaryBtn {
-  background: var(--color-accent);
-  color: var(--color-background);
+    background-color var(--transition-fast);
 }
 
 .primaryBtn:hover {
@@ -64,28 +51,35 @@
   transform: translateY(-2px);
 }
 
-.secondaryBtn {
-  border-color: var(--color-border);
-  color: var(--color-text-secondary);
-  background: transparent;
+.emailLink {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-mono);
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-hover);
+  text-underline-offset: 5px;
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast);
 }
 
-.secondaryBtn:hover {
-  border-color: var(--color-border-hover);
-  color: var(--color-text-primary);
-  transform: translateY(-2px);
+.emailLink:hover {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
 }
 
 .links {
   display: flex;
-  gap: var(--space-6);
   flex-wrap: wrap;
-  justify-content: center;
+  gap: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
 }
 
 .link {
   color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   transition: color var(--transition-fast);
 }
@@ -94,8 +88,23 @@
   color: var(--color-accent);
 }
 
-@media (max-width: 480px) {
-  .actions {
-    max-width: 100%;
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+    padding-left: 0;
+  }
+
+  .statement {
+    max-width: 20ch;
+  }
+}
+
+@media (max-width: 520px) {
+  .statement {
+    font-size: clamp(2rem, 11vw, 3.2rem);
+  }
+
+  .primaryBtn {
+    width: 100%;
   }
 }
