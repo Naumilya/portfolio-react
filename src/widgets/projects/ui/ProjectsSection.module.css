@@ -1,22 +1,27 @@
 .projects {
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  gap: clamp(var(--space-8), 4vw, var(--space-12));
 }
 
 .projectList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding-left: 72px;
   border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .card {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: var(--space-6);
-  padding-block: clamp(var(--space-8), 5vw, var(--space-12));
-  border-bottom: 1px solid var(--color-border);
+  gap: var(--space-5);
+  padding: var(--space-8);
+}
+
+.card + .card {
+  border-left: 1px solid var(--color-border);
 }
 
 .cardTopline,
@@ -31,6 +36,7 @@
 .personalEyebrow,
 .personalKicker,
 .caseTitle {
+  color: var(--color-text-muted);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
@@ -38,18 +44,11 @@
   text-transform: uppercase;
 }
 
-.projectIndex,
-.personalEyebrow,
-.personalKicker,
-.caseTitle {
-  color: var(--color-text-muted);
-}
-
 .link,
 .projectAction {
   color: var(--color-accent);
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   transition: color var(--transition-fast);
@@ -61,57 +60,59 @@
 }
 
 .cardHeader {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
-  gap: clamp(var(--space-6), 5vw, var(--space-12));
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .cardTitle {
-  max-width: 14ch;
-  font-size: clamp(2.2rem, 4.5vw, 4.5rem);
+  max-width: 18ch;
+  font-size: clamp(1.8rem, 2.8vw, 2.55rem);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.055em;
-  transition: color var(--transition-fast);
-}
-
-.card:hover .cardTitle {
-  color: var(--color-accent);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 
 .cardType {
   margin-top: var(--space-2);
   color: var(--color-text-muted);
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
 }
 
 .description {
-  max-width: 42ch;
-  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  max-width: 46ch;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
   line-height: 1.55;
 }
 
 .caseGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-  gap: clamp(var(--space-6), 6vw, 72px);
-  padding-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.card .caseBlock + .caseBlock {
+  padding-top: var(--space-5);
   border-top: 1px solid var(--color-border);
 }
 
 .caseBlock {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .caseBlock p,
 .decisionList {
-  max-width: 58ch;
+  max-width: 62ch;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-  line-height: 1.7;
+  line-height: 1.68;
 }
 
 .stackList {
@@ -123,7 +124,6 @@
 .tech {
   padding: 5px 9px;
   color: var(--color-text-muted);
-  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-family-mono);
@@ -132,10 +132,9 @@
 
 .personalSection {
   display: grid;
-  grid-template-columns: minmax(220px, 0.36fr) minmax(0, 1fr);
-  gap: clamp(var(--space-8), 7vw, 88px);
-  padding: clamp(var(--space-8), 5vw, var(--space-12)) 0 0 72px;
-  border-top: 1px solid var(--color-border);
+  grid-template-columns: minmax(210px, 0.3fr) minmax(0, 0.7fr);
+  gap: clamp(var(--space-8), 6vw, 72px);
+  padding: var(--space-8) 0 0 72px;
 }
 
 .personalIntro {
@@ -146,24 +145,23 @@
 }
 
 .personalTitle {
-  font-size: clamp(1.9rem, 3.5vw, 3.2rem);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
 }
 
 .personalIntro p {
-  max-width: 30ch;
+  max-width: 32ch;
   font-size: var(--font-size-sm);
+  line-height: 1.65;
 }
 
 .personalCard {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: clamp(var(--space-6), 4vw, var(--space-10));
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 2%), transparent 40%),
-    var(--color-surface);
+  gap: var(--space-5);
+  padding: clamp(var(--space-6), 3vw, var(--space-8));
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
@@ -174,16 +172,16 @@
 }
 
 .personalProjectTitle {
-  font-size: clamp(2.3rem, 5vw, 4.5rem);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.055em;
+  letter-spacing: -0.045em;
 }
 
 .statusBadge {
   padding: 6px 10px;
   color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 36%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 32%, transparent);
   border-radius: var(--radius-round);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
@@ -194,15 +192,15 @@
 .personalDescription {
   max-width: 64ch;
   color: var(--color-text-primary);
-  font-size: clamp(1.08rem, 1.6vw, 1.3rem);
+  font-size: clamp(1.02rem, 1.4vw, 1.16rem);
   line-height: 1.55;
 }
 
 .personalGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
-  padding-top: var(--space-6);
+  gap: var(--space-5);
+  padding-top: var(--space-5);
   border-top: 1px solid var(--color-border);
 }
 
@@ -228,13 +226,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding-top: var(--space-6);
+  padding-top: var(--space-5);
   border-top: 1px solid var(--color-border);
 }
 
 .projectAction {
   align-self: flex-start;
-  margin-top: var(--space-1);
 }
 
 @media (max-width: 900px) {
@@ -243,11 +240,19 @@
     padding-left: 0;
   }
 
-  .cardHeader,
-  .caseGrid,
+  .projectList,
   .personalSection,
   .personalGrid {
     grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding-inline: 0;
+  }
+
+  .card + .card {
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
   }
 
   .personalIntro p {
@@ -256,17 +261,18 @@
 }
 
 @media (max-width: 520px) {
-  .cardTopline,
-  .personalHeader {
-    align-items: flex-start;
+  .card,
+  .personalCard {
+    padding-block: var(--space-6);
   }
 
+  .cardTopline,
   .personalHeader {
     flex-direction: column;
   }
 
   .cardTitle,
   .personalProjectTitle {
-    font-size: clamp(2.1rem, 12vw, 3.4rem);
+    font-size: clamp(1.85rem, 9vw, 2.4rem);
   }
 }
