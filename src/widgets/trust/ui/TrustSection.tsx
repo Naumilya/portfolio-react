@@ -1,16 +1,16 @@
 import styles from "./TrustSection.module.css";
 
 const PROOF_POINTS = [
+  "2024–2025 · Лемана ПРО",
   "Коммерческий React / TypeScript",
-  "Микрофронтенды",
+  "B2B / CRM / HR",
   "REST / BFF / WebSocket",
-  "Legacy • code review • releases",
-  "40+ freelance-заказов",
+  "Legacy · code review · releases",
 ];
 
 export function TrustSection() {
   return (
-    <div className={styles.trust} aria-label="Ключевые навыки">
+    <div className={styles.trust} aria-label="Ключевой коммерческий опыт">
       {PROOF_POINTS.map((point) => (
         <span key={point} className={styles.point}>
           <span className={styles.dot} aria-hidden="true" />
