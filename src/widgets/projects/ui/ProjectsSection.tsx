@@ -1,100 +1,123 @@
 import { personalProjects, projects } from "@/shared/config/projects";
 import { useReveal } from "@/shared/lib/useReveal";
+import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./ProjectsSection.module.css";
 
 export function ProjectsSection() {
   const sectionRef = useReveal<HTMLElement>();
-  const personalRef = useReveal<HTMLElement>();
 
   return (
-    <>
-      <section
-        id="projects"
-        ref={sectionRef}
-        className={`${styles.projects} reveal`}
-      >
-        <h2 className={styles.title}>Избранные работы</h2>
+    <section
+      id="projects"
+      ref={sectionRef}
+      className={`${styles.projects} reveal`}
+    >
+      <SectionHeading
+        index="03"
+        eyebrow="Selected work"
+        title="Работы"
+        description="Коммерческие продукты и собственная разработка — с фокусом на задачу, мой вклад и технический контекст."
+      />
 
-        <div className={styles.stack}>
-          {projects.map((project) => (
-            <article key={project.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div>
-                  <h3 className={styles.cardTitle}>{project.title}</h3>
-                  <p className={styles.cardType}>{project.type}</p>
-                </div>
-                {project.liveUrl && (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.link}
-                    aria-label={`Открыть сайт проекта ${project.title}`}
-                  >
-                    Открыть сайт
-                  </a>
-                )}
-              </div>
+      <div className={styles.projectList}>
+        {projects.map((project, index) => (
+          <article key={project.id} className={styles.card}>
+            <div className={styles.cardTopline}>
+              <span className={styles.projectIndex} aria-hidden="true">
+                {String(index + 1).padStart(2, "0")} / commercial
+              </span>
 
-              <p className={styles.description}>{project.description}</p>
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                  aria-label={`Открыть сайт проекта ${project.title}`}
+                >
+                  Live ↗
+                </a>
+              )}
+            </div>
 
-              <div className={styles.contribution}>
-                <h4 className={styles.contributionTitle}>Мой вклад</h4>
-                <p>{project.contribution}</p>
-              </div>
-
-              <ul className={styles.stackList}>
-                {project.stack.map((tech) => (
-                  <li key={tech} className={styles.tech}>
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section
-        id="own-projects"
-        ref={personalRef}
-        className={`${styles.projects} reveal`}
-      >
-        <h2 className={styles.title}>Свои проекты</h2>
-
-        {personalProjects.map((project) => (
-          <article
-            key={project.id}
-            className={`${styles.card} ${styles.personalCard}`}
-          >
             <div className={styles.cardHeader}>
               <div>
                 <h3 className={styles.cardTitle}>{project.title}</h3>
-                <p className={styles.cardType}>Telegram Mini App</p>
+                <p className={styles.cardType}>{project.type}</p>
               </div>
-              <span className={styles.statusBadge}>
-                {project.status === "in-progress"
-                  ? "В разработке"
-                  : "Запланирован"}
-              </span>
+              <p className={styles.description}>{project.description}</p>
             </div>
-
-            <p className={styles.description}>{project.description}</p>
 
             <div className={styles.caseGrid}>
               <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Зачем</h4>
+                <h4 className={styles.caseTitle}>Задача</h4>
+                <p>{project.task}</p>
+              </div>
+
+              <div className={styles.caseBlock}>
+                <h4 className={styles.caseTitle}>Мой вклад</h4>
+                <p>{project.contribution}</p>
+              </div>
+            </div>
+
+            <ul className={styles.stackList} aria-label="Стек проекта">
+              {project.stack.map((tech) => (
+                <li key={tech} className={styles.tech}>
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <div id="own-projects" className={styles.personalSection}>
+        <div className={styles.personalIntro}>
+          <span className={styles.personalEyebrow}>Lab / personal</span>
+          <h3 className={styles.personalTitle}>Свои проекты</h3>
+          <p>
+            Здесь можно экспериментировать с продуктом и архитектурой без ограничений коммерческого проекта.
+          </p>
+        </div>
+
+        {personalProjects.map((project) => (
+          <article key={project.id} className={styles.personalCard}>
+            <div className={styles.personalHeader}>
+              <div>
+                <span className={styles.personalKicker}>Telegram Mini App</span>
+                <h4 className={styles.personalProjectTitle}>{project.title}</h4>
+              </div>
+              <span className={styles.statusBadge}>
+                {project.status === "in-progress" ? "В разработке" : "Запланирован"}
+              </span>
+            </div>
+
+            <p className={styles.personalDescription}>{project.description}</p>
+
+            <div className={styles.personalGrid}>
+              <div className={styles.caseBlock}>
+                <h5 className={styles.caseTitle}>Зачем</h5>
                 <p>{project.problem}</p>
               </div>
+
               <div className={styles.caseBlock}>
-                <h4 className={styles.caseTitle}>Как устроено</h4>
+                <h5 className={styles.caseTitle}>Архитектура</h5>
                 <p>{project.architecture}</p>
+              </div>
+
+              <div className={styles.caseBlock}>
+                <h5 className={styles.caseTitle}>Ключевые решения</h5>
+                <ul className={styles.decisionList}>
+                  {project.keyDecisions.map((decision) => (
+                    <li key={decision}>{decision}</li>
+                  ))}
+                </ul>
               </div>
             </div>
 
             <div className={styles.workingBlock}>
-              <h4 className={styles.caseTitle}>Уже работает</h4>
+              <h5 className={styles.caseTitle}>Уже работает</h5>
               <ul className={styles.stackList}>
                 {project.working.map((item) => (
                   <li key={item} className={styles.tech}>
@@ -109,15 +132,15 @@ export function ProjectsSection() {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${styles.link} ${styles.projectAction}`}
+                className={styles.projectAction}
                 aria-label={`Открыть GitHub проекта ${project.title}`}
               >
-                Смотреть код на GitHub →
+                Смотреть код на GitHub ↗
               </a>
             )}
           </article>
         ))}
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
