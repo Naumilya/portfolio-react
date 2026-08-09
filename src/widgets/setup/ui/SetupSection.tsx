@@ -11,7 +11,7 @@ export function SetupSection() {
     <section id="setup" ref={sectionRef} className={`${styles.setup} reveal`}>
       <SectionHeading
         index="05"
-        eyebrow="Workspace"
+        eyebrow="Рабочее место"
         title="Сетап"
         description="Железо, периферия и инструменты, которыми пользуюсь в работе и своих проектах."
       />
