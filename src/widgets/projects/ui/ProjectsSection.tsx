@@ -17,7 +17,7 @@ export function ProjectsSection() {
         index="03"
         eyebrow="Selected work"
         title="Работы"
-        description="Коммерческие кейсы и собственный продукт: контекст, мой вклад и технические решения без выдуманных метрик."
+        description="Коммерческие кейсы и собственный продукт: контекст задачи, мой вклад и технические решения."
       />
 
       <div className={styles.projectList}>
