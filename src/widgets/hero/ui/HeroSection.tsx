@@ -129,18 +129,25 @@ export function HeroSection() {
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title">
       <div className={styles.content}>
-        <p className={`${styles.intro} hero-animate`}>
-          <span className={styles.prompt}>$</span>
-          <span>whoami</span>
-          <span className={styles.caret} aria-hidden="true">
-            _
-          </span>
-        </p>
+        <div className={`${styles.metaRow} hero-animate`}>
+          <p className={styles.intro}>
+            <span className={styles.prompt}>$</span>
+            <span>whoami</span>
+            <span className={styles.caret} aria-hidden="true">
+              _
+            </span>
+          </p>
+
+          <a href="#contacts" className={styles.availability}>
+            <span className={styles.availabilityDot} aria-hidden="true" />
+            Открыт к предложениям
+          </a>
+        </div>
 
         <hgroup className={styles.hgroup}>
           <h1 id="hero-title" className="hero-animate hero-animate-delay-1">
-            Привет, я Илья —{" "}
-            <span className={styles.highlight}>Frontend-разработчик.</span>
+            {siteConfig.name} —{" "}
+            <span className={styles.highlight}>{siteConfig.role}.</span>
           </h1>
 
           <h2 className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
@@ -153,12 +160,12 @@ export function HeroSection() {
         </hgroup>
 
         <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
-          <a href="#projects" className={styles.primaryBtn}>
-            Смотреть работы
+          <a href="#experience" className={styles.primaryBtn}>
+            Смотреть опыт
           </a>
 
-          <a href="#contacts" className={styles.secondaryBtn}>
-            Связаться
+          <a href="#projects" className={styles.secondaryBtn}>
+            Работы
           </a>
 
           <a
