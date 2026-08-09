@@ -5,19 +5,17 @@ export function App() {
   const initialTitleRef = useRef<string>(document.title);
 
   useEffect(() => {
+    const initialTitle = initialTitleRef.current;
+
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        document.title = '🦆 Эй, ты куда?';
-      } else {
-        document.title = initialTitleRef.current;
-      }
+      document.title = document.hidden ? "🦆 Эй, ты куда?" : initialTitle;
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      document.title = initialTitleRef.current;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.title = initialTitle;
     };
   }, []);
 
