@@ -5,36 +5,28 @@
 }
 
 .projectList {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding-left: 72px;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  margin-left: 54px;
 }
 
-.card {
+.projectCard {
   display: flex;
   min-width: 0;
   flex-direction: column;
   gap: var(--space-5);
-  padding: var(--space-8);
+  padding: clamp(var(--space-6), 3vw, var(--space-8));
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
-.card + .card {
-  border-left: 1px solid var(--color-border);
-}
-
-.cardTopline,
-.personalHeader {
+.projectHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
 }
 
-.projectIndex,
-.personalEyebrow,
-.personalKicker,
+.kicker,
 .caseTitle {
   color: var(--color-text-muted);
   font-family: var(--font-family-mono);
@@ -44,58 +36,41 @@
   text-transform: uppercase;
 }
 
-.link,
-.projectAction {
+.kicker {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+}
+
+.projectTitle {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.statusBadge {
+  padding: 6px 10px;
   color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 32%, transparent);
+  border-radius: var(--radius-round);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
-  transition: color var(--transition-fast);
-}
-
-.link:hover,
-.projectAction:hover {
-  color: var(--color-accent-hover);
-}
-
-.cardHeader {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.cardTitle {
-  max-width: 18ch;
-  font-size: clamp(1.8rem, 2.8vw, 2.55rem);
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-}
-
-.cardType {
-  margin-top: var(--space-2);
-  color: var(--color-text-muted);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
 }
 
 .description {
-  max-width: 46ch;
+  max-width: 64ch;
   color: var(--color-text-primary);
-  font-size: var(--font-size-md);
+  font-size: clamp(1.02rem, 1.4vw, 1.16rem);
   line-height: 1.55;
 }
 
 .caseGrid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-5);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--color-border);
-}
-
-.card .caseBlock + .caseBlock {
   padding-top: var(--space-5);
   border-top: 1px solid var(--color-border);
 }
@@ -113,95 +88,6 @@
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   line-height: 1.68;
-}
-
-.stackList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-.tech {
-  padding: 5px 9px;
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-}
-
-.personalSection {
-  display: grid;
-  grid-template-columns: minmax(210px, 0.3fr) minmax(0, 0.7fr);
-  gap: clamp(var(--space-8), 6vw, 72px);
-  padding: var(--space-8) 0 0 72px;
-}
-
-.personalIntro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-}
-
-.personalTitle {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.04em;
-}
-
-.personalIntro p {
-  max-width: 32ch;
-  font-size: var(--font-size-sm);
-  line-height: 1.65;
-}
-
-.personalCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding: clamp(var(--space-6), 3vw, var(--space-8));
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.personalKicker {
-  display: inline-block;
-  margin-bottom: var(--space-2);
-}
-
-.personalProjectTitle {
-  font-size: clamp(2rem, 3.5vw, 2.8rem);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.045em;
-}
-
-.statusBadge {
-  padding: 6px 10px;
-  color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 32%, transparent);
-  border-radius: var(--radius-round);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-}
-
-.personalDescription {
-  max-width: 64ch;
-  color: var(--color-text-primary);
-  font-size: clamp(1.02rem, 1.4vw, 1.16rem);
-  line-height: 1.55;
-}
-
-.personalGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-5);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--color-border);
 }
 
 .decisionList {
@@ -230,49 +116,54 @@
   border-top: 1px solid var(--color-border);
 }
 
+.stackList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tech {
+  padding: 5px 9px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+}
+
 .projectAction {
   align-self: flex-start;
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.projectAction:hover {
+  color: var(--color-accent-hover);
 }
 
 @media (max-width: 900px) {
-  .projectList,
-  .personalSection {
-    padding-left: 0;
+  .projectList {
+    margin-left: 0;
   }
 
-  .projectList,
-  .personalSection,
-  .personalGrid {
+  .caseGrid {
     grid-template-columns: 1fr;
-  }
-
-  .card {
-    padding-inline: 0;
-  }
-
-  .card + .card {
-    border-top: 1px solid var(--color-border);
-    border-left: 0;
-  }
-
-  .personalIntro p {
-    max-width: 52ch;
   }
 }
 
 @media (max-width: 520px) {
-  .card,
-  .personalCard {
-    padding-block: var(--space-6);
+  .projectCard {
+    padding: var(--space-5);
   }
 
-  .cardTopline,
-  .personalHeader {
+  .projectHeader {
     flex-direction: column;
   }
 
-  .cardTitle,
-  .personalProjectTitle {
+  .projectTitle {
     font-size: clamp(1.85rem, 9vw, 2.4rem);
   }
 }
