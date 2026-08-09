@@ -4,269 +4,801 @@
   gap: clamp(var(--space-8), 5vw, var(--space-16));
 }
 
-.projectList {
-  display: flex;
-  flex-direction: column;
-  padding-left: 72px;
-  border-top: 1px solid var(--color-border);
+.showcaseScene {
+  --showcase-progress: 0;
+
+  position: relative;
+  width: 100vw;
+  height: 315svh;
+  margin-left: calc(50% - 50vw);
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  padding-block: clamp(var(--space-8), 5vw, var(--space-12));
-  border-bottom: 1px solid var(--color-border);
+.showcaseStage {
+  position: sticky;
+  top: var(--header-height);
+  display: grid;
+  grid-template-columns: minmax(220px, 0.28fr) minmax(0, 1.72fr);
+  gap: clamp(var(--space-6), 4vw, var(--space-12));
+  width: 100%;
+  min-height: calc(100svh - var(--header-height));
+  padding: clamp(var(--space-6), 4vw, var(--space-12)) max(
+      var(--container-padding),
+      calc((100vw - var(--container-width)) / 2 + var(--container-padding))
+    );
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 42%, rgb(30 215 96 / 7%), transparent 32%),
+    #080808;
+  border-block: 1px solid var(--color-border);
 }
 
-.cardTopline,
-.personalHeader {
+.selector {
+  position: relative;
+  z-index: 3;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-4);
+  min-height: 0;
+  padding-block: var(--space-2);
 }
 
-.projectIndex,
-.personalEyebrow,
-.personalKicker,
-.caseTitle {
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.projectIndex,
-.personalEyebrow,
-.personalKicker,
-.caseTitle {
-  color: var(--color-text-muted);
-}
-
-.link,
-.projectAction {
-  color: var(--color-accent);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-  transition: color var(--transition-fast);
-}
-
-.link:hover,
-.projectAction:hover {
-  color: var(--color-accent-hover);
-}
-
-.cardHeader {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
-  gap: clamp(var(--space-6), 5vw, var(--space-12));
-  align-items: start;
-}
-
-.cardTitle {
-  max-width: 14ch;
-  font-size: clamp(2.2rem, 4.5vw, 4.5rem);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.055em;
-  transition: color var(--transition-fast);
-}
-
-.card:hover .cardTitle {
-  color: var(--color-accent);
-}
-
-.cardType {
-  margin-top: var(--space-2);
-  color: var(--color-text-muted);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
-}
-
-.description {
-  max-width: 42ch;
-  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-  line-height: 1.55;
-}
-
-.caseGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-  gap: clamp(var(--space-6), 6vw, 72px);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
-}
-
-.caseBlock {
+.selectorIntro {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
 
-.caseBlock p,
-.decisionList {
-  max-width: 58ch;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  line-height: 1.7;
+.selectorIntro > span,
+.panelTopline,
+.caseGrid h4,
+.selectorButton > span,
+.posterChrome {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
-.stackList {
+.selectorIntro > span,
+.selectorButton > span,
+.panelTopline,
+.caseGrid h4,
+.posterChrome {
+  color: var(--color-text-muted);
+}
+
+.selectorIntro p {
+  max-width: 23ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.selectorList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.selectorButton {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: var(--space-3);
+  width: 100%;
+  padding-block: var(--space-4);
+  color: var(--color-text-muted);
+  text-align: left;
+  background: transparent;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    color var(--transition-base),
+    padding-left var(--transition-base);
+}
+
+.selectorButton strong {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.selectorButton:hover,
+.selectorButtonActive {
+  color: var(--color-text-primary);
+  padding-left: 8px;
+}
+
+.selectorButtonActive > span {
+  color: var(--color-accent);
+}
+
+.sceneProgress {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.sceneProgressValue {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform: scaleX(var(--showcase-progress));
+  transform-origin: left;
+}
+
+.panelViewport {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: clamp(var(--space-8), 5vw, 72px);
+  align-items: center;
+  opacity: 0;
+  transform: translateY(34px) scale(0.985);
+  pointer-events: none;
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 520ms var(--ease-out);
+}
+
+.panelActive {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.panelCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.panelTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panelTopline span:first-child {
+  color: var(--color-accent);
+}
+
+.projectTitle {
+  max-width: 9ch;
+  font-size: clamp(3.7rem, 6vw, 7.3rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 0.86;
+  letter-spacing: -0.07em;
+}
+
+.projectDescription {
+  max-width: 48ch;
+  color: var(--color-text-primary);
+  font-size: clamp(1.08rem, 1.5vw, 1.3rem);
+  line-height: 1.55;
+}
+
+.caseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.caseGrid > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.caseGrid p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.68;
+}
+
+.noteList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.noteList li {
+  position: relative;
+  min-height: 54px;
+  padding: 11px 11px 11px 27px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+}
+
+.noteList li::before {
+  content: "+";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: var(--color-accent);
+}
+
+.panelFooter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.tagList {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
 }
 
-.tech {
-  padding: 5px 9px;
+.tagList li {
+  padding: 5px 8px;
   color: var(--color-text-muted);
-  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
 }
 
-.personalSection {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.36fr) minmax(0, 1fr);
-  gap: clamp(var(--space-8), 7vw, 88px);
-  padding: clamp(var(--space-8), 5vw, var(--space-12)) 0 0 72px;
-  border-top: 1px solid var(--color-border);
+.projectLink {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
 }
 
-.personalIntro {
+.projectLink:hover {
+  color: var(--color-accent-hover);
+}
+
+.poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(72svh, 720px);
+  overflow: hidden;
+  background: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: clamp(18px, 2.2vw, 32px);
+  box-shadow: 0 42px 110px rgb(0 0 0 / 36%);
+}
+
+.poster::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom right, #000, transparent 78%);
+}
+
+.posterChrome {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  left: var(--space-5);
+  z-index: 5;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
   gap: var(--space-3);
 }
 
-.personalTitle {
-  font-size: clamp(1.9rem, 3.5vw, 3.2rem);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.045em;
+.systemWindow {
+  position: absolute;
+  inset: 18% 9% 27%;
+  display: grid;
+  grid-template-columns: 18% 1fr;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid #323232;
+  border-radius: 14px;
+  transform: perspective(900px) rotateX(5deg) rotateY(-7deg);
+  box-shadow: 36px 42px 80px rgb(0 0 0 / 32%);
 }
 
-.personalIntro p {
-  max-width: 30ch;
-  font-size: var(--font-size-sm);
-}
-
-.personalCard {
+.systemSidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: clamp(var(--space-6), 4vw, var(--space-10));
+  gap: 12px;
+  padding: 22px 12px;
+  background: #0a0a0a;
+  border-right: 1px solid #2a2a2a;
+}
+
+.systemSidebar span {
+  height: 8px;
+  background: #2c2c2c;
+  border-radius: 999px;
+}
+
+.systemSidebar span:first-child {
+  width: 72%;
+  background: var(--color-accent);
+}
+
+.systemMain {
+  padding: 18px;
+}
+
+.systemToolbar {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+
+.systemToolbar span {
+  width: 54px;
+  height: 9px;
+  background: #292929;
+  border-radius: 999px;
+}
+
+.systemToolbar span:first-child {
+  width: 92px;
+  background: #f4f4f1;
+}
+
+.systemCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.systemCards span {
+  min-height: 76px;
   background:
-    linear-gradient(145deg, rgb(255 255 255 / 2%), transparent 40%),
-    var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+    linear-gradient(135deg, rgb(255 255 255 / 5%), transparent),
+    #171717;
+  border: 1px solid #292929;
+  border-radius: 8px;
 }
 
-.personalKicker {
-  display: inline-block;
-  margin-bottom: var(--space-2);
+.systemCards span:nth-child(2),
+.systemCards span:nth-child(5) {
+  border-color: rgb(30 215 96 / 48%);
 }
 
-.personalProjectTitle {
-  font-size: clamp(2.3rem, 5vw, 4.5rem);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.055em;
+.systemFlow,
+.radarPipeline {
+  position: absolute;
+  right: 8%;
+  bottom: 10%;
+  left: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-family-mono);
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
 }
 
-.statusBadge {
-  padding: 6px 10px;
+.systemFlow span,
+.radarPipeline span {
+  padding: 9px 12px;
+  color: var(--color-text-primary);
+  background: #111;
+  border: 1px solid #343434;
+  border-radius: var(--radius-sm);
+}
+
+.systemFlow i,
+.radarPipeline i {
   color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 36%, transparent);
-  border-radius: var(--radius-round);
+  font-style: normal;
+}
+
+.routePoster {
+  background:
+    radial-gradient(circle at 74% 24%, rgb(30 215 96 / 10%), transparent 25%),
+    #0d0d0d;
+}
+
+.routeCanvas {
+  position: absolute;
+  inset: 12% 8% 8%;
+}
+
+.routeLine {
+  position: absolute;
+  top: 18%;
+  left: 13%;
+  width: 2px;
+  height: 64%;
+  background: linear-gradient(var(--color-accent), rgb(30 215 96 / 12%));
+  transform: rotate(-24deg);
+  transform-origin: top;
+}
+
+.routeStop {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  color: var(--color-text-secondary);
+  background: rgb(13 13 13 / 92%);
+  border: 1px solid #303030;
+  border-radius: 999px;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
 }
 
-.personalDescription {
-  max-width: 64ch;
-  color: var(--color-text-primary);
-  font-size: clamp(1.08rem, 1.6vw, 1.3rem);
-  line-height: 1.55;
+.routeStop::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  background: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgb(30 215 96 / 9%);
 }
 
-.personalGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+.stopOne {
+  top: 18%;
+  left: 14%;
 }
 
-.decisionList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+.stopTwo {
+  top: 39%;
+  left: 34%;
 }
 
-.decisionList li {
-  position: relative;
-  padding-left: var(--space-4);
+.stopThree {
+  top: 59%;
+  left: 50%;
 }
 
-.decisionList li::before {
-  content: "↳";
+.stopFour {
+  top: 76%;
+  left: 68%;
+}
+
+.routeTicket {
   position: absolute;
-  left: 0;
-  color: var(--color-accent);
-}
-
-.workingBlock {
+  top: 16%;
+  right: 2%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  width: min(46%, 250px);
+  padding: clamp(18px, 2.4vw, 30px);
+  background: #f1f0e8;
+  border-radius: 2px;
+  box-shadow: 20px 28px 60px rgb(0 0 0 / 34%);
+  transform: rotate(4deg);
 }
 
-.projectAction {
-  align-self: flex-start;
-  margin-top: var(--space-1);
+.routeTicket::after {
+  content: "02";
+  position: absolute;
+  right: 10px;
+  bottom: -0.2em;
+  color: #d4d2c7;
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
 }
 
-@media (max-width: 900px) {
-  .projectList,
-  .personalSection {
-    padding-left: 0;
+.routeTicket small {
+  color: #686861;
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.routeTicket strong {
+  margin-top: 34%;
+  color: #090909;
+  font-size: clamp(2rem, 4.4vw, 4.6rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.routeTicket span {
+  margin-top: var(--space-4);
+  color: #4c4c47;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+}
+
+.radarPoster {
+  background:
+    radial-gradient(circle at 50% 52%, rgb(30 215 96 / 12%), transparent 42%),
+    #0b0c0b;
+}
+
+.radarCanvas {
+  position: absolute;
+  inset: 10%;
+}
+
+.radarRings,
+.radarRings span,
+.radarSweep {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.radarRings {
+  width: 68%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(30 215 96 / 42%);
+}
+
+.radarRings::before,
+.radarRings::after,
+.radarRings span {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgb(30 215 96 / 17%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.radarRings::before {
+  width: 66%;
+  height: 66%;
+}
+
+.radarRings::after {
+  width: 33%;
+  height: 33%;
+}
+
+.radarSweep {
+  width: 31%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+  transform-origin: left center;
+  animation: radar-sweep 5s linear infinite;
+}
+
+.vacancyCard {
+  position: absolute;
+  top: 31%;
+  right: 7%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  width: min(52%, 300px);
+  gap: 10px;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgb(14 14 14 / 94%);
+  border: 1px solid rgb(30 215 96 / 48%);
+  border-radius: 14px;
+  box-shadow: 22px 28px 70px rgb(0 0 0 / 42%);
+  transform: rotate(-3deg);
+}
+
+.vacancyCard small {
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.vacancyCard strong {
+  font-size: clamp(1.35rem, 2.7vw, 2.6rem);
+  letter-spacing: -0.05em;
+}
+
+.vacancyCard > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vacancyCard > div span {
+  padding: 4px 7px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+}
+
+.radarPipeline {
+  right: 0;
+  bottom: 2%;
+  left: 0;
+}
+
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
   }
 
-  .cardHeader,
-  .caseGrid,
-  .personalSection,
-  .personalGrid {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1180px) {
+  .panel {
+    grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+    gap: var(--space-8);
+  }
+
+  .projectTitle {
+    font-size: clamp(3.2rem, 5vw, 5.7rem);
+  }
+
+  .noteList {
     grid-template-columns: 1fr;
   }
 
-  .personalIntro p {
-    max-width: 52ch;
+  .noteList li {
+    min-height: auto;
   }
 }
 
-@media (max-width: 520px) {
-  .cardTopline,
-  .personalHeader {
-    align-items: flex-start;
+@media (max-width: 900px) {
+  .showcaseScene {
+    width: auto;
+    height: auto;
+    margin-left: 0;
   }
 
-  .personalHeader {
+  .showcaseStage {
+    position: relative;
+    top: auto;
+    display: block;
+    min-height: auto;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border-block: 0;
+  }
+
+  .selector {
+    display: none;
+  }
+
+  .panelViewport {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .panel,
+  .panelActive {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    padding-block: var(--space-8);
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .panel:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .poster {
+    order: -1;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+
+  .projectTitle {
+    max-width: 12ch;
+  }
+}
+
+@media (max-width: 620px) {
+  .projectTitle {
+    font-size: clamp(2.8rem, 14vw, 4.6rem);
+  }
+
+  .caseGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .panelFooter {
+    align-items: flex-start;
     flex-direction: column;
   }
 
-  .cardTitle,
-  .personalProjectTitle {
-    font-size: clamp(2.1rem, 12vw, 3.4rem);
+  .poster {
+    aspect-ratio: 1 / 1;
+  }
+
+  .routeTicket {
+    right: 0;
+    width: 48%;
+  }
+
+  .routeStop {
+    font-size: 0.62rem;
+  }
+
+  .systemFlow,
+  .radarPipeline {
+    gap: 6px;
+    font-size: 0.6rem;
+  }
+
+  .systemFlow span,
+  .radarPipeline span {
+    padding: 6px 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcaseScene {
+    height: auto;
+  }
+
+  .showcaseStage {
+    position: relative;
+    top: auto;
+    display: block;
+    min-height: auto;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border-block: 0;
+  }
+
+  .selector {
+    display: none;
+  }
+
+  .panelViewport {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .panel,
+  .panelActive {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+    gap: var(--space-8);
+    padding-block: var(--space-8);
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .panel:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .radarSweep {
+    animation: none;
   }
 }
