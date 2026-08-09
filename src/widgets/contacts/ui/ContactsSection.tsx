@@ -17,12 +17,12 @@ export function ContactsSection() {
         index="06"
         eyebrow="Contact"
         title="Связаться"
-        description="Есть проект, работа или просто интересная идея — пиши."
+        description="Рассматриваю frontend-позиции и продуктовые команды, где важны качество интерфейса и инженерный контекст."
       />
 
       <div className={styles.content}>
         <p className={styles.statement}>
-          Открыт к предложениям и новым продуктам. Быстрее всего отвечаю в Telegram.
+          Если мой опыт подходит вашей команде — напишите. Быстрее всего отвечаю в Telegram.
         </p>
 
         <div className={styles.contactPanel}>
@@ -47,14 +47,6 @@ export function ContactsSection() {
               className={styles.link}
             >
               GitHub ↗
-            </a>
-            <a
-              href={siteConfig.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.link}
-            >
-              Instagram ↗
             </a>
           </div>
         </div>
