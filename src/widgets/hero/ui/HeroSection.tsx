@@ -137,20 +137,20 @@ export function HeroSection() {
           </span>
         </p>
 
-        <div className={styles.hgroup}>
+        <hgroup className={styles.hgroup}>
           <h1 id="hero-title" className="hero-animate hero-animate-delay-1">
-            <span className={styles.nameLine}>Привет, я Илья.</span>
+            Привет, я Илья —{" "}
             <span className={styles.highlight}>Frontend-разработчик.</span>
           </h1>
 
-          <p className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
+          <h2 className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
             {siteConfig.tagline}
-          </p>
+          </h2>
 
           <p className={`${styles.description} hero-animate hero-animate-delay-3`}>
             {siteConfig.description}
           </p>
-        </div>
+        </hgroup>
 
         <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
           <a href="#projects" className={styles.primaryBtn}>
