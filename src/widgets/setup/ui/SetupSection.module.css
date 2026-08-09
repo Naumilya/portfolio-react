@@ -1,20 +1,20 @@
 .setup {
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  gap: var(--space-8);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-left: 72px;
+  margin-left: 54px;
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }
 
 .card {
   min-width: 0;
-  padding: var(--space-6);
+  padding: var(--space-5);
   border-right: 1px solid var(--color-border);
 }
 
@@ -23,23 +23,24 @@
 }
 
 .cardTitle {
-  margin-bottom: var(--space-5);
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .item {
   position: relative;
   padding-left: var(--space-4);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   line-height: 1.55;
 }
 
