@@ -26,7 +26,6 @@ function useMediaQuery(query: string) {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(query);
-
     const handleChange = (event: MediaQueryListEvent) => {
       setMatches(event.matches);
     };
@@ -52,6 +51,7 @@ function smoothstep(start: number, end: number, value: number) {
 
 export function HeroSection() {
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const compactLayout = useMediaQuery("(max-width: 760px)");
   const hasFinePointer = useMediaQuery("(pointer: fine)");
 
   const [autoRotate, setAutoRotate] = useState(true);
@@ -86,7 +86,7 @@ export function HeroSection() {
   useEffect(() => {
     const hero = heroRef.current;
 
-    if (!hero || reducedMotion) {
+    if (!hero || reducedMotion || compactLayout) {
       return;
     }
 
@@ -98,18 +98,36 @@ export function HeroSection() {
       const rect = hero.getBoundingClientRect();
       const travel = Math.max(hero.offsetHeight - window.innerHeight, 1);
       const progress = clamp01(-rect.top / travel);
-      const introOpacity = 1 - smoothstep(0.16, 0.52, progress);
-      const storyOpacity = smoothstep(0.38, 0.62, progress);
-      const storyShift = Math.round((1 - storyOpacity) * 28);
+
+      const primaryExit = smoothstep(0.18, 0.4, progress);
+      const secondaryEnter = smoothstep(0.48, 0.7, progress);
+      const visualLift = smoothstep(0.22, 0.82, progress);
 
       hero.style.setProperty("--hero-progress", progress.toFixed(4));
-      hero.style.setProperty("--hero-intro-opacity", introOpacity.toFixed(4));
-      hero.style.setProperty("--hero-story-opacity", storyOpacity.toFixed(4));
-      hero.style.setProperty("--hero-story-shift", `${storyShift}px`);
-      hero.style.setProperty("--hero-copy-shift", `${Math.round(progress * -70)}px`);
-      hero.style.setProperty("--hero-duck-shift", `${(progress * -11).toFixed(2)}vw`);
-      hero.style.setProperty("--hero-duck-scale", (1 + progress * 0.24).toFixed(4));
-      hero.style.setProperty("--hero-ghost-shift", `${(progress * -7).toFixed(2)}vw`);
+      hero.style.setProperty(
+        "--hero-primary-opacity",
+        (1 - primaryExit).toFixed(4),
+      );
+      hero.style.setProperty(
+        "--hero-primary-shift",
+        `${Math.round(primaryExit * -26)}px`,
+      );
+      hero.style.setProperty(
+        "--hero-secondary-opacity",
+        secondaryEnter.toFixed(4),
+      );
+      hero.style.setProperty(
+        "--hero-secondary-shift",
+        `${Math.round((1 - secondaryEnter) * 30)}px`,
+      );
+      hero.style.setProperty(
+        "--hero-visual-scale",
+        (1 + visualLift * 0.075).toFixed(4),
+      );
+      hero.style.setProperty(
+        "--hero-visual-shift",
+        `${Math.round(visualLift * -10)}px`,
+      );
     };
 
     const requestUpdate = () => {
@@ -132,7 +150,7 @@ export function HeroSection() {
         cancelAnimationFrame(frameId);
       }
     };
-  }, [reducedMotion]);
+  }, [compactLayout, reducedMotion]);
 
   const markInteracted = () => {
     setHasInteracted(true);
@@ -195,110 +213,140 @@ export function HeroSection() {
       aria-labelledby="hero-title"
     >
       <div className={styles.stage}>
-        <div className={styles.grid} aria-hidden="true" />
-        <div className={styles.ghostWord} aria-hidden="true">
-          SHIP.
-        </div>
-
-        <div className={styles.content}>
-          <p className={`${styles.intro} hero-animate`}>
-            <span className={styles.prompt}>$</span>
-            <span>whoami</span>
-            <span className={styles.caret} aria-hidden="true">
-              _
-            </span>
-          </p>
-
-          <div className={styles.hgroup}>
-            <h1 id="hero-title" className="hero-animate hero-animate-delay-1">
-              <span className={styles.nameLine}>Привет, я Илья.</span>
-              <span className={styles.highlight}>Frontend-разработчик.</span>
-            </h1>
-
-            <p className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
-              {siteConfig.tagline}
-            </p>
-
-            <p className={`${styles.description} hero-animate hero-animate-delay-3`}>
-              {siteConfig.description}
-            </p>
+        <div className={styles.frame}>
+          <div className={styles.topline} aria-hidden="true">
+            <span>portfolio / frontend</span>
+            <span>React · TypeScript · product UI</span>
           </div>
 
-          <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
-            <a href="#projects" className={styles.primaryBtn}>
-              Смотреть работы
-            </a>
+          <div className={styles.copyPanel}>
+            <div className={styles.copyViewport}>
+              <div className={styles.primaryCopy}>
+                <p className={`${styles.command} hero-animate`}>
+                  <span>$</span>
+                  <span>whoami</span>
+                  <span className={styles.caret} aria-hidden="true">
+                    _
+                  </span>
+                </p>
 
-            <a href="#contacts" className={styles.secondaryBtn}>
-              Связаться
-            </a>
+                <div className={styles.headingGroup}>
+                  <h1
+                    id="hero-title"
+                    className="hero-animate hero-animate-delay-1"
+                  >
+                    <span>Привет,</span>
+                    <span>я Илья.</span>
+                    <strong>Frontend-разработчик.</strong>
+                  </h1>
 
-            <a
-              href={siteConfig.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.tertiaryLink}
-            >
-              GitHub ↗
-            </a>
-          </div>
-        </div>
+                  <p className={`${styles.tagline} hero-animate hero-animate-delay-2`}>
+                    {siteConfig.tagline}
+                  </p>
 
-        <div className={styles.visual}>
-          <div className={styles.canvasWrapper} aria-hidden="true">
-            {sceneEnabled ? (
-              <Suspense fallback={<div className={styles.canvasFallback} />}>
-                <DuckScene
-                  reducedMotion={reducedMotion}
-                  hasFinePointer={hasFinePointer}
-                  autoRotate={autoRotate}
-                  duckReady={duckReady}
-                  onDuckInteract={handleDuckInteract}
-                  onDuckReady={handleDuckReady}
-                  onControlsStart={handleControlsStart}
-                  onControlsEnd={handleControlsEnd}
-                />
-              </Suspense>
-            ) : (
-              <div className={styles.canvasFallback} />
-            )}
-          </div>
+                  <p
+                    className={`${styles.description} hero-animate hero-animate-delay-3`}
+                  >
+                    {siteConfig.description}
+                  </p>
+                </div>
 
-          {duckMessage && (
-            <div className={styles.duckBubble} role="status" aria-live="polite">
-              {duckMessage}
+                <div className={`${styles.actions} hero-animate hero-animate-delay-4`}>
+                  <a href="#projects" className={styles.primaryBtn}>
+                    Смотреть работы
+                  </a>
+                  <a href="#contacts" className={styles.secondaryBtn}>
+                    Связаться
+                  </a>
+                  <a
+                    href={siteConfig.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.tertiaryLink}
+                  >
+                    GitHub ↗
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.secondaryCopy}>
+                <span className={styles.sceneIndex}>02 / after release</span>
+                <h2>
+                  Интерфейс —
+                  <strong>только начало.</strong>
+                </h2>
+                <p className={styles.secondaryLead}>
+                  Работаю с REST/BFF, WebSocket, legacy-кодом, тестами и релизным
+                  циклом — там, где фронтенд становится частью продукта.
+                </p>
+                <a href="#experience" className={styles.storyLink}>
+                  Как это выглядит в работе ↓
+                </a>
+              </div>
             </div>
-          )}
 
-          <div
-            className={`${styles.interactionHint} ${
-              duckReady ? styles.interactionHintReady : ""
-            } ${hasInteracted ? styles.interactionHintHidden : ""}`}
-            aria-hidden="true"
-          >
-            <span className={styles.interactionDot} />
-            покрути • кликни
+            <ul className={styles.techRail} aria-label="Основной стек">
+              <li>React / TypeScript</li>
+              <li>REST / BFF</li>
+              <li>WebSocket</li>
+              <li>Legacy / releases</li>
+            </ul>
           </div>
-        </div>
 
-        <div className={styles.story}>
-          <span className={styles.storyKicker}>after / release</span>
-          <p className={styles.storyText}>
-            Не просто собираю интерфейсы.
-            <span>Разбираюсь, как они живут после релиза.</span>
-          </p>
-          <div className={styles.storyMeta} aria-label="Основные направления">
-            <span>React / TypeScript</span>
-            <span>API / real-time</span>
-            <span>legacy / releases</span>
+          <div className={styles.visualPanel}>
+            <div className={styles.visualHeader} aria-hidden="true">
+              <span>DUCK.3D</span>
+              <span>interactive object</span>
+            </div>
+
+            <div className={styles.visual}>
+              <div className={styles.visualWord} aria-hidden="true">
+                DUCK
+              </div>
+              <div className={styles.target} aria-hidden="true" />
+
+              <div className={styles.canvasWrapper} aria-hidden="true">
+                {sceneEnabled ? (
+                  <Suspense fallback={<div className={styles.canvasFallback} />}>
+                    <DuckScene
+                      reducedMotion={reducedMotion}
+                      hasFinePointer={hasFinePointer}
+                      autoRotate={autoRotate}
+                      duckReady={duckReady}
+                      onDuckInteract={handleDuckInteract}
+                      onDuckReady={handleDuckReady}
+                      onControlsStart={handleControlsStart}
+                      onControlsEnd={handleControlsEnd}
+                    />
+                  </Suspense>
+                ) : (
+                  <div className={styles.canvasFallback} />
+                )}
+              </div>
+
+              {duckMessage && (
+                <div className={styles.duckBubble} role="status" aria-live="polite">
+                  {duckMessage}
+                </div>
+              )}
+            </div>
+
+            <div className={styles.visualFooter} aria-hidden="true">
+              <span className={styles.interactionState}>
+                <i />
+                {hasInteracted ? "interaction received" : "drag / click"}
+              </span>
+              <span>{duckReady ? "ready" : "loading"}</span>
+            </div>
           </div>
-        </div>
 
-        <div className={styles.scrollProgress} aria-hidden="true">
-          <span className={styles.progressLabel}>scroll</span>
-          <span className={styles.progressTrack}>
-            <span className={styles.progressValue} />
-          </span>
+          <div className={styles.progress} aria-hidden="true">
+            <span>01</span>
+            <span className={styles.progressTrack}>
+              <i />
+            </span>
+            <span>02</span>
+          </div>
         </div>
       </div>
     </section>
