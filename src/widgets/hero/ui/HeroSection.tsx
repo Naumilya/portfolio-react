@@ -100,10 +100,12 @@ export function HeroSection() {
       const progress = clamp01(-rect.top / travel);
       const introOpacity = 1 - smoothstep(0.16, 0.52, progress);
       const storyOpacity = smoothstep(0.38, 0.62, progress);
+      const storyShift = Math.round((1 - storyOpacity) * 28);
 
       hero.style.setProperty("--hero-progress", progress.toFixed(4));
       hero.style.setProperty("--hero-intro-opacity", introOpacity.toFixed(4));
       hero.style.setProperty("--hero-story-opacity", storyOpacity.toFixed(4));
+      hero.style.setProperty("--hero-story-shift", `${storyShift}px`);
       hero.style.setProperty("--hero-copy-shift", `${Math.round(progress * -70)}px`);
       hero.style.setProperty("--hero-duck-shift", `${(progress * -11).toFixed(2)}vw`);
       hero.style.setProperty("--hero-duck-scale", (1 + progress * 0.24).toFixed(4));
