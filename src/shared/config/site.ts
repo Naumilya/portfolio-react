@@ -11,4 +11,6 @@ export const siteConfig = {
   telegramChannel: "https://t.me/duck_in_the_net",
   github: "https://github.com/Naumilya",
   instagram: "https://instagram.com/fanadape",
+  cv: "/assets/ilya-naumov-cv.pdf",
+  cvFileName: "Ilya_Naumov_CV.pdf",
 } as const;

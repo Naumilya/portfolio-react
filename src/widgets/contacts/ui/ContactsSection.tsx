@@ -41,6 +41,14 @@ export function ContactsSection() {
 
           <div className={styles.links}>
             <a
+              href={siteConfig.cv}
+              download={siteConfig.cvFileName}
+              className={styles.link}
+            >
+              Скачать CV ↓
+            </a>
+
+            <a
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"

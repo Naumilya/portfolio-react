@@ -169,6 +169,14 @@ export function HeroSection() {
           </a>
 
           <a
+            href={siteConfig.cv}
+            download={siteConfig.cvFileName}
+            className={styles.secondaryBtn}
+          >
+            Скачать CV ↓
+          </a>
+
+          <a
             href={siteConfig.github}
             target="_blank"
             rel="noopener noreferrer"
