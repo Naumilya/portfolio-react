@@ -53,6 +53,102 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.caseStudy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-left: 54px;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  scroll-margin-top: 96px;
+}
+
+.caseStudyHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.caseStudyEyebrow,
+.architectureIndex {
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.caseStudyTitle {
+  margin-top: var(--space-2);
+  color: var(--color-text-primary);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.03em;
+}
+
+.caseStudyDescription {
+  max-width: 62ch;
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.caseStudyLink {
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.caseStudyLink:hover {
+  color: var(--color-accent);
+}
+
+.architectureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+}
+
+.architectureCard {
+  min-width: 0;
+  padding: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+
+.architectureCard:nth-child(3n) {
+  border-right: 0;
+}
+
+.architectureCard:nth-child(n + 4) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.architectureCard:last-child {
+  grid-column: span 2;
+  border-right: 0;
+}
+
+.architectureTitle {
+  margin-top: var(--space-3);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.35;
+}
+
+.architectureDescription {
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.6;
+}
+
 @media (max-width: 1000px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -65,11 +161,58 @@
   .card:nth-child(-n + 2) {
     border-bottom: 1px solid var(--color-border);
   }
+
+  .architectureGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .architectureCard,
+  .architectureCard:nth-child(3n),
+  .architectureCard:last-child {
+    grid-column: auto;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .architectureCard:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .architectureCard:nth-child(n + 4) {
+    border-bottom: 0;
+  }
+
+  .architectureCard:last-child {
+    grid-column: span 2;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
 }
 
 @media (max-width: 900px) {
-  .grid {
+  .grid,
+  .caseStudy {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .caseStudyHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .architectureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .architectureCard,
+  .architectureCard:nth-child(2n),
+  .architectureCard:nth-child(3n),
+  .architectureCard:last-child {
+    grid-column: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
   }
 }
 

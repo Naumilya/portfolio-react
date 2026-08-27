@@ -42,6 +42,10 @@ export function Footer() {
           $ fortune
         </button>
         <span className={styles.divider} aria-hidden="true" />
+        <a href="#site-architecture" className={styles.link}>
+          Как сделан сайт
+        </a>
+        <span className={styles.divider} aria-hidden="true" />
         <a
           href={siteConfig.github}
           target="_blank"
