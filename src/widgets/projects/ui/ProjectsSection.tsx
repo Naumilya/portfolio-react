@@ -32,6 +32,18 @@ export function ProjectsSection() {
               <span className={styles.statusBadge}>
                 {project.status === "in-progress" ? "В разработке" : "Запланирован"}
               </span>
+
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.projectAction}
+                  aria-label={`Открыть GitHub проекта ${project.title}`}
+                >
+                  GitHub →
+                </a>
+              )}
             </div>
 
             <p className={styles.description}>{project.description}</p>
@@ -67,18 +79,6 @@ export function ProjectsSection() {
                 ))}
               </ul>
             </div>
-
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.projectAction}
-                aria-label={`Открыть GitHub проекта ${project.title}`}
-              >
-                Смотреть код на GitHub ↗
-              </a>
-            )}
           </article>
         ))}
       </div>
