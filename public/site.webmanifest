@@ -1,0 +1,19 @@
+{
+  "name": "Илья Наумов — Frontend-разработчик",
+  "short_name": "Илья Наумов",
+  "description": "Портфолио frontend-разработчика: React, TypeScript, WebSocket и продуктовая разработка.",
+  "lang": "ru-RU",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

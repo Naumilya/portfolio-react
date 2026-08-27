@@ -13,9 +13,13 @@ import { TrustSection } from "@/widgets/trust";
 export function HomePage() {
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Перейти к содержимому
+      </a>
+
       <Header />
 
-      <main className="main-content">
+      <main id="main-content" tabIndex={-1} className="main-content">
         <HeroSection />
         <TrustSection />
         <NowSection />

@@ -117,6 +117,69 @@ p {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 1000;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  transform: translateY(calc(-100% - var(--space-6)));
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+.noscript-message {
+  max-width: 60ch;
+  margin: var(--space-6) auto;
+  padding: var(--space-4);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.error-boundary {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 100vh;
+  padding-block: var(--space-12);
+}
+
+.error-boundary__eyebrow {
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+}
+
+.error-boundary h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 7vw, 4.5rem);
+}
+
+.error-boundary > p:not(.error-boundary__eyebrow) {
+  max-width: 56ch;
+}
+
+.error-boundary button {
+  padding: var(--space-3) var(--space-5);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
 /* Reveal animations */
 .reveal {
   opacity: 0;
