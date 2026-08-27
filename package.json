@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-cv.mjs",
+    "predev": "node scripts/build-cv-v2.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-cv.mjs",
+    "prebuild": "node scripts/build-cv-v2.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -23,7 +23,7 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react-dom": "^19.2.7",
     "@types/three": "^0.185.4",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.6.0",
