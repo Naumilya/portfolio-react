@@ -4,6 +4,7 @@ import { ExperienceSection } from "@/widgets/experience";
 import { Footer } from "@/widgets/footer";
 import { Header } from "@/widgets/header";
 import { HeroSection } from "@/widgets/hero";
+import { NowSection } from "@/widgets/now";
 import { ProjectsSection } from "@/widgets/projects";
 import { SetupSection } from "@/widgets/setup";
 import { TelegramSection } from "@/widgets/telegram";
@@ -17,6 +18,7 @@ export function HomePage() {
       <main className="main-content">
         <HeroSection />
         <TrustSection />
+        <NowSection />
         <AboutSection />
         <ExperienceSection />
         <ProjectsSection />
