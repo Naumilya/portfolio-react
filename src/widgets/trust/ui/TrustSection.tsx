@@ -1,10 +1,10 @@
 import styles from "./TrustSection.module.css";
 
 const PROOF_POINTS = [
-  "2024–2025 · Лемана ПРО",
+  "2024–2025 · SkillStaff / Лемана ПРО",
   "Коммерческий React / TypeScript",
   "B2B / CRM / HR",
-  "REST / BFF / WebSocket",
+  "REST API · BFF · WebSocket",
   "Legacy · code review · releases",
 ];
 
