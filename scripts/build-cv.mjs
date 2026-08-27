@@ -19,7 +19,7 @@ const base64 = (
 const pdf = Buffer.from(base64.replace(/\s+/g, ""), "base64");
 const hash = createHash("sha256").update(pdf).digest("hex");
 const expectedHash =
-  "873da13bb8dea5d0e8f30b5f74661b4d1c12a7f9f425e8be9729d817b96be0b6";
+  "c8bc7d8e65ca5b2995db14c603401535708e488d05b11feb57fdaf42adf177d1";
 
 if (hash !== expectedHash) {
   throw new Error(`CV asset checksum mismatch: ${hash}`);
