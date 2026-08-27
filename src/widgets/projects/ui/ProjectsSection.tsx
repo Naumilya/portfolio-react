@@ -4,6 +4,14 @@ import { SectionHeading } from "@/shared/ui/SectionHeading";
 
 import styles from "./ProjectsSection.module.css";
 
+const JOBRADAR_ARCHITECTURE_STEPS = [
+  "Пользователь Telegram",
+  "Bot / server",
+  "Источники вакансий",
+  "Фильтрация",
+  "Telegram Mini App",
+] as const;
+
 export function ProjectsSection() {
   const sectionRef = useReveal<HTMLElement>();
 
@@ -68,6 +76,36 @@ export function ProjectsSection() {
                 </ul>
               </div>
             </div>
+
+            {project.id === "jobradar" && (
+              <div
+                className={styles.architectureFlow}
+                aria-labelledby="jobradar-architecture-flow"
+              >
+                <div className={styles.architectureFlowHeader}>
+                  <h4
+                    id="jobradar-architecture-flow"
+                    className={styles.caseTitle}
+                  >
+                    Поток данных
+                  </h4>
+                  <span className={styles.architectureHint}>
+                    sources можно заменять независимо от клиента
+                  </span>
+                </div>
+
+                <ol className={styles.architectureSteps}>
+                  {JOBRADAR_ARCHITECTURE_STEPS.map((step, index) => (
+                    <li key={step} className={styles.architectureStep}>
+                      <span className={styles.architectureStepIndex}>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
 
             <div className={styles.workingBlock}>
               <h4 className={styles.caseTitle}>Уже работает</h4>

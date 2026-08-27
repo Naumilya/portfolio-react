@@ -108,6 +108,69 @@
   color: var(--color-accent);
 }
 
+.architectureFlow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.architectureFlowHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.architectureHint {
+  color: var(--color-text-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  text-align: right;
+}
+
+.architectureSteps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+}
+
+.architectureStep {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-text-primary) 2%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.architectureStep:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  z-index: 1;
+  padding: 0 3px;
+  color: var(--color-accent);
+  background: var(--color-surface);
+  transform: translateY(-50%);
+}
+
+.architectureStepIndex {
+  color: var(--color-accent);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
 .workingBlock {
   display: flex;
   flex-direction: column;
@@ -149,8 +212,28 @@
     margin-left: 0;
   }
 
-  .caseGrid {
+  .caseGrid,
+  .architectureSteps {
     grid-template-columns: 1fr;
+  }
+
+  .architectureFlowHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .architectureHint {
+    text-align: left;
+  }
+
+  .architectureStep:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -17px;
+    left: 18px;
+    transform: none;
+    content: "↓";
   }
 }
 
