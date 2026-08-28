@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { experience } from "@/shared/config/experience";
 import { personalProjects } from "@/shared/config/projects";
 import { siteConfig } from "@/shared/config/site";
 
+import { askDuck } from "../api/askDuck";
 import styles from "./DuckAssistant.module.css";
 
 type AnswerKey = "websocket" | "experience" | "jobradar" | "contact";
+type AnswerSource = "local" | "ai";
 
 const websocketExperience = experience.find((item) =>
   item.responsibilities.some((responsibility) =>
@@ -46,10 +48,68 @@ const quickLinks = [
   { href: "#contacts", label: "Контакты" },
 ] as const;
 
+const aiContext = {
+  site: {
+    name: siteConfig.name,
+    role: siteConfig.role,
+    tagline: siteConfig.tagline,
+    description: siteConfig.description,
+    email: siteConfig.email,
+    phone: siteConfig.phone,
+    telegram: siteConfig.telegram,
+    github: siteConfig.github,
+  },
+  experience,
+  projects: personalProjects,
+};
+
+function getFallbackAnswer(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("websocket") || normalized.includes("вебсокет")) {
+    return answers.websocket;
+  }
+
+  if (
+    normalized.includes("jobradar") ||
+    normalized.includes("ваканс") ||
+    normalized.includes("проект")
+  ) {
+    return answers.jobradar;
+  }
+
+  if (
+    normalized.includes("контакт") ||
+    normalized.includes("связ") ||
+    normalized.includes("telegram") ||
+    normalized.includes("email") ||
+    normalized.includes("почт")
+  ) {
+    return answers.contact;
+  }
+
+  if (
+    normalized.includes("опыт") ||
+    normalized.includes("лемана") ||
+    normalized.includes("skillstaff") ||
+    normalized.includes("работал")
+  ) {
+    return answers.experience;
+  }
+
+  return "AI сейчас недоступен. Я могу локально ответить про коммерческий опыт, WebSocket, JobRadar и контакты — выбери готовый вопрос выше.";
+}
+
 export function DuckAssistant() {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeAnswer, setActiveAnswer] = useState<AnswerKey | null>(null);
+  const [answer, setAnswer] = useState(
+    "Выбери готовый вопрос или спроси что-нибудь про портфолио.",
+  );
+  const [answerSource, setAnswerSource] = useState<AnswerSource>("local");
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const projects = document.getElementById("projects");
@@ -82,6 +142,35 @@ export function DuckAssistant() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  const showLocalAnswer = (key: AnswerKey) => {
+    setActiveAnswer(key);
+    setAnswer(answers[key]);
+    setAnswerSource("local");
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const question = message.trim();
+    if (!question || isLoading) return;
+
+    setActiveAnswer(null);
+    setIsLoading(true);
+    setAnswer("Утка думает…");
+
+    try {
+      const aiAnswer = await askDuck(question, aiContext);
+      setAnswer(aiAnswer);
+      setAnswerSource("ai");
+      setMessage("");
+    } catch {
+      setAnswer(getFallbackAnswer(question));
+      setAnswerSource("local");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -110,8 +199,8 @@ export function DuckAssistant() {
           </div>
 
           <p className={styles.intro}>
-            Я пока работаю локально, без AI-бэкенда. Но быстро покажу главное по
-            портфолио.
+            Готовые ответы работают всегда. Свободный вопрос сначала попробует AI,
+            а при ошибке автоматически переключится на локальный fallback.
           </p>
 
           <div className={styles.questions} aria-label="Готовые вопросы">
@@ -120,17 +209,37 @@ export function DuckAssistant() {
                 key={question.key}
                 type="button"
                 className={`${styles.question} ${activeAnswer === question.key ? styles.questionActive : ""}`}
-                onClick={() => setActiveAnswer(question.key)}
+                onClick={() => showLocalAnswer(question.key)}
               >
                 {question.label}
               </button>
             ))}
           </div>
 
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input
+              className={styles.input}
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              maxLength={280}
+              placeholder="Например: с чем работал на Лемана ПРО?"
+              aria-label="Вопрос Duck-помощнику"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              className={styles.send}
+              disabled={isLoading || !message.trim()}
+            >
+              {isLoading ? "…" : "Спросить"}
+            </button>
+          </form>
+
           <div className={styles.answer} aria-live="polite">
-            {activeAnswer
-              ? answers[activeAnswer]
-              : "Выбери вопрос выше или сразу перейди к нужной секции."}
+            <span className={styles.answerSource}>
+              {answerSource === "ai" ? "AI RESPONSE" : "LOCAL FALLBACK"}
+            </span>
+            {answer}
           </div>
 
           <nav className={styles.quickLinks} aria-label="Быстрые переходы">
