@@ -8,7 +8,10 @@ const parts = [
   "scripts/cv-materialize/part-02.b64",
   "scripts/cv-materialize/part-03.b64",
   "scripts/cv-materialize/part-04.b64",
-  "scripts/cv-materialize/part-05.b64",
+  "scripts/cv-materialize/part-05-1.b64",
+  "scripts/cv-materialize/part-05-2.b64",
+  "scripts/cv-materialize/part-05-3.b64",
+  "scripts/cv-materialize/part-05-4.b64",
 ];
 
 const target = resolve("public/assets/ilya-naumov-cv.pdf");
