@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-cv-recovery.mjs",
+    "predev": "node scripts/build-cv-v2.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/build-cv-recovery.mjs",
+    "prebuild": "node scripts/build-cv-v2.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
