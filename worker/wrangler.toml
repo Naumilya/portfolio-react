@@ -1,0 +1,9 @@
+name = "portfolio-duck"
+main = "src/index.js"
+compatibility_date = "2026-08-28"
+
+[ai]
+binding = "AI"
+
+[vars]
+ALLOWED_ORIGIN = "https://fanadape.pages.dev"
