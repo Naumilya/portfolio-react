@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -36,15 +36,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Materialize CV asset
-        if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
-        run: |
-          echo "e6cf2e1f5d06653f7d3d8d21c4fe31ba2af3b5314077730a51c414c954db86c3  public/assets/ilya-naumov-cv.pdf" | sha256sum -c -
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/ilya-naumov-cv.pdf
-          if ! git diff --cached --quiet; then
-            git commit -m "(fix): materialize CV asset"
-            git push
-          fi
