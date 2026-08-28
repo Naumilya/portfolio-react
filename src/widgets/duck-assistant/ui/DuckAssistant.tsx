@@ -54,10 +54,7 @@ export function DuckAssistant() {
   useEffect(() => {
     const projects = document.getElementById("projects");
 
-    if (!projects || typeof IntersectionObserver === "undefined") {
-      setIsVisible(true);
-      return;
-    }
+    if (!projects || typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
