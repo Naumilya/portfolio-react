@@ -1,5 +1,6 @@
 import { AboutSection } from "@/widgets/about";
 import { ContactsSection } from "@/widgets/contacts";
+import { DuckAssistant } from "@/widgets/duck-assistant";
 import { ExperienceSection } from "@/widgets/experience";
 import { Footer } from "@/widgets/footer";
 import { Header } from "@/widgets/header";
@@ -32,6 +33,7 @@ export function HomePage() {
       </main>
 
       <Footer />
+      <DuckAssistant />
     </>
   );
 }
