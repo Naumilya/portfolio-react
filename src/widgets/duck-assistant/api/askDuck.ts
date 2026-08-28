@@ -5,6 +5,28 @@ interface DuckAiResponse {
 }
 
 const REQUEST_TIMEOUT_MS = 8_000;
+const CLIENT_ID_STORAGE_KEY = "duck-assistant-client-id";
+
+function createClientId() {
+  if (typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function getClientId() {
+  try {
+    const stored = window.localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+    if (stored) return stored;
+
+    const created = createClientId();
+    window.localStorage.setItem(CLIENT_ID_STORAGE_KEY, created);
+    return created;
+  } catch {
+    return createClientId();
+  }
+}
 
 export async function askDuck(
   message: string,
@@ -20,7 +42,7 @@ export async function askDuck(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message, context }),
+      body: JSON.stringify({ message, context, clientId: getClientId() }),
       signal: controller.signal,
     });
 

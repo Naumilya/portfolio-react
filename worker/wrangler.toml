@@ -5,5 +5,13 @@ compatibility_date = "2026-08-28"
 [ai]
 binding = "AI"
 
+[[ratelimits]]
+name = "DUCK_RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 8
+  period = 60
+
 [vars]
 ALLOWED_ORIGIN = "https://fanadape.pages.dev"

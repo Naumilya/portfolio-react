@@ -1,6 +1,7 @@
 const MODEL = "@cf/meta/llama-3.1-8b-instruct";
 const MAX_MESSAGE_LENGTH = 280;
 const MAX_BODY_LENGTH = 20_000;
+const MAX_CLIENT_ID_LENGTH = 80;
 
 const json = (body, status = 200, origin = "*") =>
   new Response(JSON.stringify(body), {
@@ -61,14 +62,29 @@ export default {
     }
 
     const message = typeof payload.message === "string" ? payload.message.trim() : "";
+    const clientId = typeof payload.clientId === "string" ? payload.clientId.trim() : "";
     const context = payload.context;
 
     if (!message || message.length > MAX_MESSAGE_LENGTH) {
       return json({ error: "Message must contain 1–280 characters" }, 400, origin);
     }
 
+    if (!clientId || clientId.length > MAX_CLIENT_ID_LENGTH) {
+      return json({ error: "Valid clientId is required" }, 400, origin);
+    }
+
     if (!context || typeof context !== "object" || Array.isArray(context)) {
       return json({ error: "Portfolio context is required" }, 400, origin);
+    }
+
+    try {
+      const { success } = await env.DUCK_RATE_LIMITER.limit({ key: clientId });
+
+      if (!success) {
+        return json({ error: "Too many requests" }, 429, origin);
+      }
+    } catch {
+      return json({ error: "Rate limiter unavailable" }, 503, origin);
     }
 
     const systemPrompt = [
