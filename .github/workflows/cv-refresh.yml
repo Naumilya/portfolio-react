@@ -24,17 +24,26 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install ReportLab
-        run: pip install reportlab==4.4.3
+      - name: Install PDF tools
+        run: pip install reportlab==4.4.3 pypdf==5.9.0
 
       - name: Generate CV
         run: python .github/cv/generate_cv.py
 
       - name: Verify CV
         run: |
-          test -s public/assets/ilya-naumov-cv.pdf
-          pdftotext public/assets/ilya-naumov-cv.pdf - | grep -F 'Московский технологический институт (МТИ), Москва'
-          pdftotext public/assets/ilya-naumov-cv.pdf - | grep -F '27.03.04'
+          python - <<'PY'
+          from pathlib import Path
+          from pypdf import PdfReader
+
+          path = Path('public/assets/ilya-naumov-cv.pdf')
+          assert path.stat().st_size > 20_000
+          text = '\n'.join(page.extract_text() or '' for page in PdfReader(path).pages)
+          assert 'Московский технологический институт (МТИ), Москва' in text
+          assert '27.03.04' in text
+          assert 'Системы и средства автоматизации технологических процессов' in text
+          print(f'CV verified: {path.stat().st_size} bytes')
+          PY
 
       - name: Commit CV
         run: |
